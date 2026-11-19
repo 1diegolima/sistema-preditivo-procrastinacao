@@ -47,101 +47,192 @@ HTML_PAGE = """<!DOCTYPE html>
   <title>Sistema de Foco & Previsão de Procrastinação</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #090d16;
-      --surface: #101726;
-      --surface-border: #1e293b;
+      --bg: #080c14;
+      --card-bg: rgba(15, 23, 42, 0.65);
+      --card-border: rgba(255, 255, 255, 0.07);
+      --card-hover: rgba(255, 255, 255, 0.1);
       --text: #f8fafc;
-      --muted: #94a3b8;
+      --text-secondary: #94a3b8;
+      --text-tertiary: #64748b;
       --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.15);
       --success: #10b981;
+      --success-glow: rgba(16, 185, 129, 0.15);
       --warning: #f59e0b;
       --danger: #f43f5e;
+      --danger-glow: rgba(244, 63, 94, 0.15);
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       background-color: var(--bg);
+      background-image: radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.05) 0%, transparent 60%);
       color: var(--text);
-      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 24px 16px;
+      padding: 32px 16px;
       -webkit-font-smoothing: antialiased;
     }
     .container {
       width: 100%;
-      max-width: 720px;
-      background: var(--surface);
-      border: 1px solid var(--surface-border);
-      border-radius: 24px;
+      max-width: 740px;
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
       padding: 32px;
-      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.03);
     }
+    
+    /* Top Header */
     .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 24px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid var(--surface-border);
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--card-border);
     }
-    .title-area h1 {
-      font-size: 1.15rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
+    .brand {
       display: flex;
       align-items: center;
       gap: 10px;
     }
-    .dot {
-      width: 9px;
-      height: 9px;
+    .brand-dot {
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
       background: var(--accent);
-      box-shadow: 0 0 12px var(--accent);
+      box-shadow: 0 0 10px var(--accent);
     }
-    .nav-tabs {
+    .brand h1 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #fff;
+    }
+    .brand-tag {
+      font-size: 0.65rem;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: rgba(56, 189, 248, 0.1);
+      color: var(--accent);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+    }
+
+    /* Minimalist Segmented Navbar */
+    .nav-bar {
       display: flex;
       gap: 4px;
-      background: rgba(0, 0, 0, 0.3);
+      background: rgba(0, 0, 0, 0.35);
       padding: 4px;
-      border-radius: 12px;
-      border: 1px solid var(--surface-border);
-      flex-wrap: wrap;
-      justify-content: center;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--card-border);
+      margin-bottom: 24px;
+      overflow-x: auto;
     }
-    .nav-btn {
+    .nav-item {
+      flex: 1;
+      min-width: 90px;
+      text-align: center;
       background: transparent;
       border: none;
-      color: var(--muted);
-      font-size: 0.68rem;
+      color: var(--text-secondary);
+      font-size: 0.75rem;
       font-weight: 600;
-      padding: 5px 10px;
-      border-radius: 8px;
+      padding: 8px 10px;
+      border-radius: 10px;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
-    .nav-btn.active {
-      background: var(--accent);
-      color: #000;
+    .nav-item:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.04);
     }
-    /* Dashboard */
-    .dashboard {
+    .nav-item.active {
+      background: #1e293b;
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Common Card / Panel */
+    .card {
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .card-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Toast Notification */
+    .toast-notice {
+      position: fixed;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      background: #1e293b;
+      border: 1px solid var(--card-border);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .toast-notice.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ========================================================
+       TAB 1: DIAGNÓSTICO (PREVISÃO ML)
+       ======================================================== */
+    .dashboard-grid {
       display: flex;
       align-items: center;
       gap: 24px;
-      background: rgba(9, 13, 22, 0.7);
-      border: 1px solid var(--surface-border);
-      border-radius: 20px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
       padding: 24px;
       margin-bottom: 24px;
     }
-    .gauge-box {
+    .gauge-wrapper {
       position: relative;
       width: 120px;
       height: 120px;
@@ -153,19 +244,19 @@ HTML_PAGE = """<!DOCTYPE html>
       transform: rotate(-90deg);
     }
     .gauge-bg {
-      stroke: var(--surface-border);
-      stroke-width: 9;
+      stroke: rgba(255, 255, 255, 0.06);
+      stroke-width: 8;
       fill: none;
     }
     .gauge-fill {
-      stroke-width: 9;
+      stroke-width: 8;
       fill: none;
       stroke-linecap: round;
       stroke-dasharray: 282.7;
       stroke-dashoffset: 200;
-      transition: stroke-dashoffset 0.6s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.4s ease;
+      transition: stroke-dashoffset 0.6s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.4s ease;
     }
-    .gauge-center {
+    .gauge-center-content {
       position: absolute;
       inset: 0;
       display: flex;
@@ -173,845 +264,1091 @@ HTML_PAGE = """<!DOCTYPE html>
       align-items: center;
       justify-content: center;
     }
-    .gauge-val {
-      font-size: 1.6rem;
+    .gauge-number {
+      font-size: 1.7rem;
       font-weight: 700;
       letter-spacing: -0.04em;
+      font-family: 'JetBrains Mono', monospace;
     }
-    .gauge-label {
-      font-size: 0.65rem;
+    .gauge-sub {
+      font-size: 0.62rem;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--muted);
+      letter-spacing: 0.06em;
+      color: var(--text-tertiary);
     }
-    .status-area { flex: 1; }
-    .status-pill {
+    .dash-info { flex: 1; }
+    .dash-badge {
       display: inline-block;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: 600;
-      padding: 4px 10px;
+      padding: 3px 10px;
       border-radius: 999px;
       margin-bottom: 8px;
     }
-    .status-desc {
-      font-size: 0.82rem;
-      color: var(--muted);
+    .dash-text {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
       line-height: 1.5;
       margin-bottom: 12px;
     }
-    .quick-win {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--surface-border);
-      border-radius: 10px;
-      padding: 8px 12px;
-      font-size: 0.75rem;
-    }
-    .quick-win-btn {
-      color: var(--accent);
-      background: none;
-      border: none;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    /* Controls */
-    .controls-title {
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--muted);
-      margin-bottom: 16px;
-    }
-    .control-group { margin-bottom: 16px; }
-    .control-header {
+    .control-item { margin-bottom: 14px; }
+    .control-header-row {
       display: flex;
       justify-content: space-between;
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       font-weight: 500;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
-    .control-val {
+    .control-val-badge {
       font-family: 'JetBrains Mono', monospace;
       color: var(--accent);
-      font-size: 0.82rem;
+      font-size: 0.75rem;
     }
     input[type=range] {
       -webkit-appearance: none;
       width: 100%;
       background: transparent;
+      outline: none;
     }
     input[type=range]::-webkit-slider-thumb {
       -webkit-appearance: none;
-      height: 18px;
-      width: 18px;
+      height: 16px;
+      width: 16px;
       border-radius: 50%;
       background: #ffffff;
       cursor: pointer;
-      margin-top: -6px;
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+      margin-top: -5px;
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
       transition: transform 0.15s ease;
     }
-    input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+    input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.15); }
     input[type=range]::-webkit-slider-runnable-track {
       width: 100%;
       height: 6px;
-      cursor: pointer;
-      background: var(--surface-border);
+      background: rgba(255, 255, 255, 0.08);
       border-radius: 3px;
     }
-    .presets {
+    .presets-row {
       display: flex;
-      align-items: center;
       gap: 8px;
-      margin-top: 20px;
-      padding-top: 18px;
-      border-top: 1px solid var(--surface-border);
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--card-border);
     }
-    .preset-btn {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--surface-border);
-      color: var(--text);
-      font-size: 0.75rem;
+    .btn-preset {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
+      color: var(--text-secondary);
+      font-size: 0.72rem;
       padding: 6px 12px;
-      border-radius: 8px;
+      border-radius: var(--radius-sm);
       cursor: pointer;
       transition: all 0.2s ease;
     }
-    .preset-btn:hover {
+    .btn-preset:hover {
       background: rgba(255, 255, 255, 0.08);
-      border-color: var(--accent);
+      color: #fff;
     }
-    /* Chatbot Styles */
-    .chat-box {
-      background: rgba(9, 13, 22, 0.7);
-      border: 1px solid var(--surface-border);
-      border-radius: 20px;
+
+    /* ========================================================
+       TAB 2: POMODORO MINIMALISTA & CONFIGURÁVEL
+       ======================================================== */
+    .pomodoro-card {
+      text-align: center;
+      padding: 32px 24px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      position: relative;
+    }
+    /* Mode Selector Pills */
+    .pomo-modes {
+      display: inline-flex;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--card-border);
+      padding: 3px;
+      border-radius: 999px;
+      margin-bottom: 24px;
+    }
+    .pomo-mode-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-tertiary);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 6px 16px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .pomo-mode-btn.active {
+      background: #1e293b;
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    /* Clock Display */
+    .pomo-clock {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 5rem;
+      font-weight: 300;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      color: #fff;
+      margin: 10px 0 16px 0;
+    }
+    /* Progress Bar */
+    .pomo-progress-track {
+      width: 100%;
+      max-width: 320px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 999px;
+      margin: 0 auto 20px auto;
+      overflow: hidden;
+    }
+    .pomo-progress-bar {
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+    /* Task Input */
+    .pomo-task-input {
+      background: transparent;
+      border: none;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.15);
+      color: var(--text);
+      font-size: 0.85rem;
+      text-align: center;
+      padding: 6px 12px;
+      width: 80%;
+      max-width: 380px;
+      margin-bottom: 26px;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+    .pomo-task-input:focus {
+      border-bottom-color: var(--accent);
+    }
+    .pomo-task-input::placeholder {
+      color: var(--text-tertiary);
+      font-style: italic;
+    }
+    /* Round Indicator */
+    .pomo-rounds {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 24px;
+      font-size: 0.72rem;
+      color: var(--text-tertiary);
+    }
+    .round-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .round-dot.done { background: var(--accent); }
+    .round-dot.current { box-shadow: 0 0 8px var(--accent); background: #fff; }
+    /* Primary Controls */
+    .pomo-controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .btn-pomo-main {
+      background: var(--accent);
+      color: #040810;
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 12px 36px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      letter-spacing: 0.03em;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 4px 16px var(--accent-glow);
+    }
+    .btn-pomo-main:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(56, 189, 248, 0.3);
+    }
+    .btn-pomo-sec {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 11px 18px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-pomo-sec:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+    }
+    /* Secondary Actions (Sound & Settings) */
+    .pomo-footer-actions {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      font-size: 0.72rem;
+      color: var(--text-tertiary);
+      margin-top: 10px;
+    }
+    .pomo-action-link {
+      background: none;
+      border: none;
+      color: var(--text-tertiary);
+      font-size: 0.72rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+    .pomo-action-link:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.04);
+    }
+    .pomo-action-link.active {
+      color: var(--accent);
+    }
+
+    /* Modal de Configuração do Pomodoro */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 10000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal-box {
+      background: #0f172a;
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .modal-header h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .btn-close-modal {
+      background: none;
+      border: none;
+      color: var(--text-tertiary);
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
+    .settings-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .settings-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .settings-field label {
+      font-size: 0.68rem;
+      color: var(--text-tertiary);
+      font-weight: 500;
+    }
+    .settings-field input {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 8px 10px;
+      color: #fff;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      text-align: center;
+      outline: none;
+    }
+    .settings-field input:focus { border-color: var(--accent); }
+    .btn-save-settings {
+      width: 100%;
+      background: var(--accent);
+      color: #000;
+      font-weight: 700;
+      border: none;
+      border-radius: 10px;
+      padding: 10px;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+
+    /* ========================================================
+       TAB 3: COACH ZEN (CHATBOT GEMINI)
+       ======================================================== */
+    .chat-container {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
       padding: 20px;
     }
-    .chat-header {
+    .chat-top {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding-bottom: 12px;
-      border-bottom: 1px solid var(--surface-border);
-      margin-bottom: 16px;
+      border-bottom: 1px solid var(--card-border);
+      margin-bottom: 14px;
     }
-    .api-badge {
-      font-size: 0.7rem;
-      font-family: 'JetBrains Mono', monospace;
-      padding: 3px 8px;
-      border-radius: 6px;
-      background: rgba(56, 189, 248, 0.1);
-      color: var(--accent);
-      border: 1px solid rgba(56, 189, 248, 0.25);
-      cursor: pointer;
-    }
-    .api-badge:hover {
-      background: rgba(56, 189, 248, 0.2);
-    }
-    .chat-log {
+    .chat-log-box {
       height: 260px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      padding-right: 8px;
+      gap: 10px;
+      padding-right: 6px;
       margin-bottom: 14px;
     }
-    .msg {
+    .chat-bubble-row {
       display: flex;
-      gap: 10px;
-      align-items: flex-start;
+      gap: 8px;
       font-size: 0.8rem;
       line-height: 1.5;
     }
-    .msg-bot { justify-content: flex-start; }
-    .msg-user { justify-content: flex-end; }
-    .msg-bubble {
+    .chat-bubble-row.bot { justify-content: flex-start; }
+    .chat-bubble-row.user { justify-content: flex-end; }
+    .chat-bubble {
       padding: 10px 14px;
-      border-radius: 12px;
-      max-width: 84%;
+      border-radius: 14px;
+      max-width: 82%;
     }
-    .bubble-bot {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--surface-border);
+    .chat-bubble.bot {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--card-border);
       color: var(--text);
-      border-top-left-radius: 0;
+      border-top-left-radius: 2px;
     }
-    .bubble-user {
+    .chat-bubble.user {
       background: var(--accent);
       color: #000;
       font-weight: 500;
-      border-top-right-radius: 0;
+      border-top-right-radius: 2px;
     }
-    .chips-area {
+    .chat-quick-chips {
       display: flex;
-      flex-wrap: wrap;
       gap: 6px;
       margin-bottom: 12px;
+      overflow-x: auto;
+      padding-bottom: 4px;
     }
-    .chip {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--surface-border);
-      color: var(--muted);
-      font-size: 0.72rem;
-      padding: 5px 10px;
-      border-radius: 6px;
+    .quick-chip {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
+      color: var(--text-secondary);
+      font-size: 0.7rem;
+      padding: 4px 10px;
+      border-radius: 999px;
       cursor: pointer;
+      white-space: nowrap;
       transition: all 0.2s ease;
     }
-    .chip:hover {
-      color: var(--text);
+    .quick-chip:hover {
       border-color: var(--accent);
+      color: #fff;
     }
-    .chip-sos {
-      background: rgba(244, 63, 94, 0.1);
-      border-color: rgba(244, 63, 94, 0.3);
-      color: #fda4af;
-    }
-    .chat-input-row {
+    .chat-input-bar {
       display: flex;
       gap: 8px;
     }
-    .chat-input {
+    .chat-text-input {
       flex: 1;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--surface-border);
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--card-border);
       border-radius: 10px;
       padding: 10px 14px;
-      color: var(--text);
+      color: #fff;
       font-size: 0.8rem;
       outline: none;
     }
-    .chat-input:focus { border-color: var(--accent); }
-    .chat-send {
+    .chat-text-input:focus { border-color: var(--accent); }
+    .chat-send-btn {
       background: var(--accent);
       color: #000;
-      font-weight: 600;
+      font-weight: 700;
       border: none;
       border-radius: 10px;
       padding: 0 16px;
       cursor: pointer;
+      font-size: 0.8rem;
     }
-    /* Key Modal */
-    .key-bar {
-      display: none;
-      margin-bottom: 12px;
-      padding: 10px 14px;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--surface-border);
-      border-radius: 10px;
-      font-size: 0.75rem;
-    }
-    .key-bar.active { display: flex; gap: 8px; align-items: center; }
-    .key-input {
-      flex: 1;
-      background: rgba(0, 0, 0, 0.4);
-      border: 1px solid var(--surface-border);
-      border-radius: 6px;
-      padding: 6px 10px;
-      color: #fff;
-      font-family: monospace;
-      font-size: 0.75rem;
-    }
-    /* Timer & Plan */
-    .timer-container {
-      text-align: center;
-      padding: 24px;
-      background: rgba(9, 13, 22, 0.7);
-      border: 1px solid var(--surface-border);
-      border-radius: 20px;
-    }
-    .timer-clock {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 4rem;
-      font-weight: 300;
-      color: var(--text);
-      margin: 20px 0;
-    }
-    .timer-actions {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-    }
-    .btn-timer-primary {
-      background: var(--accent);
-      color: #000;
-      font-weight: 600;
-      padding: 10px 24px;
-      border-radius: 10px;
-      border: none;
-      cursor: pointer;
-    }
-    .btn-timer-sec {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--surface-border);
-      color: var(--muted);
-      padding: 10px 18px;
-      border-radius: 10px;
-      cursor: pointer;
-    }
-    .sound-toggle {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 20px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--surface-border);
-      padding: 6px 14px;
-      border-radius: 999px;
-      font-size: 0.75rem;
-      cursor: pointer;
-      color: var(--muted);
-    }
-    .plan-list {
+
+    /* ========================================================
+       TAB 4: ATIVIDADES (TREINO & REGISTRO)
+       ======================================================== */
+    .activity-grid {
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      margin-top: 16px;
+      gap: 16px;
     }
-    .plan-item {
+    .pomo-sync-banner {
+      background: rgba(56, 189, 248, 0.06);
+      border: 1px dashed rgba(56, 189, 248, 0.25);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      font-size: 0.78rem;
+      color: var(--accent);
       display: flex;
       align-items: center;
-      gap: 12px;
-      background: rgba(9, 13, 22, 0.6);
-      border: 1px solid var(--surface-border);
-      padding: 12px 16px;
-      border-radius: 12px;
-      font-size: 0.82rem;
-      cursor: pointer;
+      justify-content: space-between;
     }
-    .plan-item input { accent-color: var(--accent); width: 16px; height: 16px; }
-    .hidden { display: none !important; }
-
-    /* ===== ABA ATIVIDADES ===== */
-    .activity-section {
-      background: rgba(9, 13, 22, 0.7);
-      border: 1px solid var(--surface-border);
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 16px;
-    }
-    .activity-section h3 {
-      font-size: 0.8rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--muted);
-      margin-bottom: 14px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .activity-form {
+    .form-inline {
       display: flex;
       gap: 8px;
       align-items: flex-end;
       flex-wrap: wrap;
     }
-    .activity-field {
+    .form-field {
       display: flex;
       flex-direction: column;
       gap: 4px;
       flex: 1;
-      min-width: 100px;
+      min-width: 110px;
     }
-    .activity-field label {
-      font-size: 0.7rem;
-      color: var(--muted);
-      font-weight: 500;
+    .form-field label {
+      font-size: 0.68rem;
+      color: var(--text-tertiary);
+      font-weight: 600;
+      text-transform: uppercase;
     }
-    .activity-field input, .activity-field select {
+    .form-field input, .form-field select {
       background: rgba(0, 0, 0, 0.4);
-      border: 1px solid var(--surface-border);
-      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
       padding: 8px 10px;
-      color: var(--text);
-      font-size: 0.8rem;
+      color: #fff;
+      font-size: 0.78rem;
       outline: none;
     }
-    .activity-field input:focus, .activity-field select:focus {
+    .form-field input:focus, .form-field select:focus {
       border-color: var(--accent);
     }
-    .btn-log {
+    .btn-action-primary {
       background: var(--accent);
       color: #000;
-      font-weight: 600;
+      font-weight: 700;
       border: none;
-      border-radius: 8px;
-      padding: 8px 18px;
+      border-radius: var(--radius-sm);
+      padding: 8px 16px;
       cursor: pointer;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
+      height: 35px;
       white-space: nowrap;
-      height: 36px;
     }
-    .btn-log:hover { opacity: 0.85; }
-    .btn-log-danger {
-      background: rgba(244, 63, 94, 0.15);
-      color: var(--danger);
-      border: 1px solid rgba(244, 63, 94, 0.3);
-      font-weight: 600;
-      border-radius: 8px;
-      padding: 6px 12px;
+    .btn-action-success {
+      background: var(--success);
+      color: #000;
+      font-weight: 700;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 8px 16px;
       cursor: pointer;
-      font-size: 0.7rem;
+      font-size: 0.78rem;
+      height: 35px;
+      white-space: nowrap;
     }
-    .history-list {
-      max-height: 180px;
+    .history-scroll {
+      max-height: 160px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
       gap: 6px;
       margin-top: 10px;
     }
-    .history-item {
+    .history-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--surface-border);
-      border-radius: 8px;
-      padding: 8px 12px;
-      font-size: 0.78rem;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 7px 10px;
+      font-size: 0.75rem;
     }
-    .history-item .hi-date { color: var(--muted); font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; }
-    .history-item .hi-val { font-weight: 600; color: var(--accent); }
-    .history-item .hi-note { color: var(--muted); font-size: 0.72rem; flex: 1; margin-left: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .history-date {
+      color: var(--text-tertiary);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+    }
+    .history-dur {
+      font-weight: 700;
+      color: var(--accent);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .history-desc {
+      color: var(--text-secondary);
+      flex: 1;
+      margin-left: 10px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
 
-    /* ===== ABA RELATÓRIO ===== */
-    .report-grid {
+    /* ========================================================
+       TAB 5: RELATÓRIO ANALYTICS & STREAKS
+       ======================================================== */
+    .metrics-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
     }
-    .report-card {
-      background: rgba(9, 13, 22, 0.7);
-      border: 1px solid var(--surface-border);
-      border-radius: 16px;
+    .metric-card {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
       padding: 18px;
       text-align: center;
+      transition: all 0.2s ease;
     }
-    .report-card .rc-icon { font-size: 1.5rem; margin-bottom: 6px; }
-    .report-card .rc-value {
+    .metric-card:hover { border-color: rgba(255, 255, 255, 0.15); }
+    .metric-icon { font-size: 1.4rem; margin-bottom: 6px; }
+    .metric-value {
       font-size: 1.8rem;
       font-weight: 700;
       font-family: 'JetBrains Mono', monospace;
       letter-spacing: -0.04em;
+      color: #fff;
     }
-    .report-card .rc-label {
-      font-size: 0.7rem;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-top: 4px;
-    }
-    .streak-box {
-      background: rgba(9, 13, 22, 0.7);
-      border: 1px solid var(--surface-border);
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 16px;
-    }
-    .streak-box h3 {
-      font-size: 0.8rem;
-      font-weight: 600;
+    .metric-label {
+      font-size: 0.68rem;
+      color: var(--text-tertiary);
       text-transform: uppercase;
       letter-spacing: 0.06em;
-      color: var(--muted);
-      margin-bottom: 14px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      margin-top: 4px;
     }
-    .streak-row {
+    
+    /* Streak Container */
+    .streak-container {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .streak-line {
       display: flex;
       align-items: center;
       gap: 14px;
       padding: 10px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.04);
     }
-    .streak-row:last-child { border-bottom: none; }
-    .streak-emoji { font-size: 1.3rem; }
-    .streak-info { flex: 1; }
-    .streak-info .si-label { font-size: 0.78rem; font-weight: 500; }
-    .streak-info .si-sub { font-size: 0.68rem; color: var(--muted); }
-    .streak-count {
+    .streak-line:not(:last-child) {
+      border-bottom: 1px solid var(--card-border);
+    }
+    .streak-num {
+      font-family: 'JetBrains Mono', monospace;
       font-size: 1.5rem;
       font-weight: 700;
-      font-family: 'JetBrains Mono', monospace;
       color: var(--accent);
     }
-    .streak-fire { color: #f59e0b; }
-    .streak-dots {
+    .streak-tiles {
       display: flex;
       gap: 4px;
-      margin-top: 10px;
-      flex-wrap: wrap;
+      margin-top: 8px;
     }
-    .streak-dot {
+    .streak-tile {
       width: 14px;
       height: 14px;
       border-radius: 3px;
-      background: var(--surface-border);
+      background: rgba(255, 255, 255, 0.06);
     }
-    .streak-dot.active { background: var(--success); }
-    .streak-dot.today { box-shadow: 0 0 6px var(--accent); border: 1px solid var(--accent); }
-    .report-weekly {
-      background: rgba(9, 13, 22, 0.7);
-      border: 1px solid var(--surface-border);
-      border-radius: 16px;
+    .streak-tile.active { background: var(--success); }
+    .streak-tile.today { border: 1px solid var(--accent); }
+
+    /* Weekly Chart */
+    .chart-container {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
       padding: 20px;
     }
-    .report-weekly h3 {
-      font-size: 0.8rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--muted);
-      margin-bottom: 14px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .bar-chart {
+    .chart-bars {
       display: flex;
       align-items: flex-end;
       gap: 8px;
       height: 120px;
       padding-top: 10px;
     }
-    .bar-day {
+    .chart-col {
       flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 4px;
-      height: 100%;
       justify-content: flex-end;
+      height: 100%;
+      gap: 4px;
     }
-    .bar-stack {
+    .col-bars-stack {
       width: 100%;
       display: flex;
       flex-direction: column;
-      gap: 2px;
       align-items: center;
+      gap: 2px;
     }
-    .bar-seg {
-      width: 70%;
+    .col-seg {
+      width: 65%;
       border-radius: 3px;
       min-height: 0px;
       transition: height 0.3s ease;
     }
-    .bar-seg.study { background: var(--accent); }
-    .bar-seg.train { background: var(--success); }
-    .bar-label {
+    .col-seg.study { background: var(--accent); }
+    .col-seg.train { background: var(--success); }
+    .col-label {
       font-size: 0.65rem;
-      color: var(--muted);
-      font-weight: 500;
+      color: var(--text-tertiary);
     }
-    .bar-val {
+    .col-val {
       font-size: 0.6rem;
-      color: var(--text);
       font-family: 'JetBrains Mono', monospace;
+      color: var(--text-secondary);
     }
-    .legend-row {
+
+    /* ========================================================
+       TAB 6: PLANO DE AÇÃO
+       ======================================================== */
+    .checklist-container {
       display: flex;
-      gap: 16px;
-      justify-content: center;
-      margin-top: 12px;
-      font-size: 0.7rem;
-      color: var(--muted);
+      flex-direction: column;
+      gap: 8px;
     }
-    .legend-dot {
-      display: inline-block;
-      width: 10px;
-      height: 10px;
-      border-radius: 2px;
-      margin-right: 4px;
-      vertical-align: middle;
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--card-border);
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
     }
+    .check-item:hover { border-color: rgba(255, 255, 255, 0.12); }
+    .check-item input { accent-color: var(--accent); width: 16px; height: 16px; }
+
+    .hidden { display: none !important; }
   </style>
 </head>
 <body>
 
+  <!-- Toast Notification -->
+  <div id="toast" class="toast-notice"></div>
+
   <div class="container">
+    <!-- Header -->
     <div class="header">
-      <div class="title-area">
-        <h1><span class="dot"></span> Sistema Preditivo de Foco</h1>
-      </div>
-      <div class="nav-tabs">
-        <button id="nav-diag" class="nav-btn active" onclick="showTab('diag')">Diagnóstico</button>
-        <button id="nav-chat" class="nav-btn" onclick="showTab('chat')">💬 Coach</button>
-        <button id="nav-timer" class="nav-btn" onclick="showTab('timer')">⏱ Timer</button>
-        <button id="nav-ativ" class="nav-btn" onclick="showTab('ativ')">🏋️ Atividades</button>
-        <button id="nav-report" class="nav-btn" onclick="showTab('report')">📊 Relatório</button>
-        <button id="nav-plan" class="nav-btn" onclick="showTab('plan')">Plano</button>
+      <div class="brand">
+        <span class="brand-dot"></span>
+        <h1>Sistema Preditivo & Foco</h1>
+        <span class="brand-tag">v2.0 Minimal</span>
       </div>
     </div>
 
-    <!-- TAB 1: DIAGNÓSTICO -->
+    <!-- Navigation Tabs -->
+    <div class="nav-bar">
+      <button id="nav-diag" class="nav-item active" onclick="showTab('diag')">🎯 Diagnóstico</button>
+      <button id="nav-pomo" class="nav-item" onclick="showTab('pomo')">⏱️ Pomodoro</button>
+      <button id="nav-chat" class="nav-item" onclick="showTab('chat')">💬 Coach Zen</button>
+      <button id="nav-ativ" class="nav-item" onclick="showTab('ativ')">🏋️ Atividades</button>
+      <button id="nav-report" class="nav-item" onclick="showTab('report')">📊 Relatório</button>
+      <button id="nav-plan" class="nav-item" onclick="showTab('plan')">📋 Plano</button>
+    </div>
+
+    <!-- ==========================================
+         TAB 1: DIAGNÓSTICO
+         ========================================== -->
     <div id="tab-diag">
-      <div class="dashboard">
-        <div class="gauge-box">
+      <div class="dashboard-grid">
+        <div class="gauge-wrapper">
           <svg class="gauge-svg" viewBox="0 0 100 100">
             <circle class="gauge-bg" cx="50" cy="50" r="45" />
             <circle id="gauge" class="gauge-fill" cx="50" cy="50" r="45" stroke="var(--success)" />
           </svg>
-          <div class="gauge-center">
-            <span id="prob-num" class="gauge-val">--%</span>
-            <span class="gauge-label">Risco</span>
+          <div class="gauge-center-content">
+            <span id="prob-num" class="gauge-number">25%</span>
+            <span class="gauge-sub">Risco ML</span>
           </div>
         </div>
-        <div class="status-area">
-          <span id="status-pill" class="status-pill" style="background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.3);">Foco Preservado</span>
-          <p id="status-desc" class="status-desc">Seus parâmetros digitais estão equilibrados. A probabilidade de dispersão e fuga para telas é baixa.</p>
-          
-          <div class="quick-win">
-            <span>💡 <strong>Vitória Rápida:</strong> <span id="quick-win-text">Reduza 1h de tela para diminuir seu risco.</span></span>
-            <button class="quick-win-btn" onclick="simularVitoria()">Simular</button>
+        <div class="dash-info">
+          <span id="status-pill" class="dash-badge" style="background: rgba(16, 185, 129, 0.15); color: var(--success);">Foco Preservado</span>
+          <p id="status-desc" class="dash-text">Seus hábitos atuais protegem sua atenção contra a procrastinação involuntária.</p>
+          <button class="btn-preset" onclick="simularVitoria()" style="border-color: var(--accent); color: var(--accent);">⚡ Simular Redução de Telas (-1.5h)</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Seus Hábitos Diários (Entradas do Modelo)</div>
+        
+        <div class="control-item">
+          <div class="control-header-row">
+            <span>Tempo em Redes Sociais</span>
+            <span id="txt-horas" class="control-val-badge">2.0 h/dia</span>
           </div>
+          <input type="range" id="input-horas" min="0.5" max="8.0" step="0.5" value="2.0" oninput="recalcular()">
         </div>
-      </div>
 
-      <div class="controls-title">Variáveis de Entrada Comportamentais (IA)</div>
-
-      <div class="control-group">
-        <div class="control-header">
-          <span>Tempo Diário em Telas / Redes</span>
-          <span id="txt-horas" class="control-val">2.0 h/dia</span>
+        <div class="control-item">
+          <div class="control-header-row">
+            <span>Scroll sem Propósito (Busca por Dopamina)</span>
+            <span id="txt-dopamina" class="control-val-badge">Nível 2 / 5</span>
+          </div>
+          <input type="range" id="input-dopamina" min="1" max="5" step="1" value="2" oninput="recalcular()">
         </div>
-        <input type="range" id="input-horas" min="0" max="8" step="0.5" value="2.0" oninput="recalcular()">
-      </div>
 
-      <div class="control-group">
-        <div class="control-header">
-          <span>Busca por Dopamina (Scroll Automático sem Propósito)</span>
-          <span id="txt-dopamina" class="control-val">Nível 2 / 5</span>
+        <div class="control-item">
+          <div class="control-header-row">
+            <span>Inquietação sem Celular (Abstinência)</span>
+            <span id="txt-ansiedade" class="control-val-badge">Nível 2 / 5</span>
+          </div>
+          <input type="range" id="input-ansiedade" min="1" max="5" step="1" value="2" oninput="recalcular()">
         </div>
-        <input type="range" id="input-dopamina" min="1" max="5" step="1" value="2" oninput="recalcular()">
-      </div>
 
-      <div class="control-group">
-        <div class="control-header">
-          <span>Inquietação ao Ficar sem Celular (Maior Peso: +0.51)</span>
-          <span id="txt-ansiedade" class="control-val">Nível 2 / 5</span>
+        <div class="control-item">
+          <div class="control-header-row">
+            <span>Problemas com Sono / Cansaço Diurno</span>
+            <span id="txt-sono" class="control-val-badge">Nível 2 / 5</span>
+          </div>
+          <input type="range" id="input-sono" min="1" max="5" step="1" value="2" oninput="recalcular()">
         </div>
-        <input type="range" id="input-ansiedade" min="1" max="5" step="1" value="2" oninput="recalcular()">
-      </div>
 
-      <div class="control-group">
-        <div class="control-header">
-          <span>Problemas de Sono / Insônia</span>
-          <span id="txt-sono" class="control-val">Nível 2 / 5</span>
+        <div class="control-item">
+          <div class="control-header-row">
+            <span>Dificuldade Prévia de Concentração</span>
+            <span id="txt-concentracao" class="control-val-badge">Nível 2 / 5</span>
+          </div>
+          <input type="range" id="input-concentracao" min="1" max="5" step="1" value="2" oninput="recalcular()">
         </div>
-        <input type="range" id="input-sono" min="1" max="5" step="1" value="2" oninput="recalcular()">
-      </div>
 
-      <div class="control-group">
-        <div class="control-header">
-          <span>Dificuldade Prévia em Sustentar a Atenção</span>
-          <span id="txt-concentracao" class="control-val">Nível 2 / 5</span>
+        <div class="presets-row">
+          <button class="btn-preset" onclick="aplicarPreset(1.5, 1, 1, 1, 1)">🟢 Estudante Zen</button>
+          <button class="btn-preset" onclick="aplicarPreset(3.5, 3, 3, 3, 3)">🟡 Sobrecarga Média</button>
+          <button class="btn-preset" onclick="aplicarPreset(6.0, 5, 5, 4, 4)">🔴 Saturação Dopamina</button>
         </div>
-        <input type="range" id="input-concentracao" min="1" max="5" step="1" value="2" oninput="recalcular()">
-      </div>
-
-      <div class="presets">
-        <span style="font-size: 0.75rem; color: var(--muted);">Simular perfis:</span>
-        <button class="preset-btn" onclick="aplicarPreset(1.0, 1, 1, 1, 2)">Foco Alto</button>
-        <button class="preset-btn" onclick="aplicarPreset(3.5, 3, 3, 3, 3)">Estudante Médio</button>
-        <button class="preset-btn" onclick="aplicarPreset(6.0, 5, 5, 4, 4)">Hiper-estimulado</button>
       </div>
     </div>
 
-    <!-- TAB 2: CHATBOT COACH ZEN (COM GEMINI LLM) -->
-    <div id="tab-chat" class="hidden">
-      <div class="chat-box">
-        <div class="chat-header">
-          <div>
-            <h3 style="font-size: 0.85rem; font-weight: 600;">Coach Zen de Foco & Neurociência</h3>
-            <p style="font-size: 0.72rem; color: var(--muted);">Potencializado por Google Gemini (1M tokens) + Contexto de IA</p>
+    <!-- ==========================================
+         TAB 2: POMODORO MINIMALISTA & CONFIGURÁVEL
+         ========================================== -->
+    <div id="tab-pomo" class="hidden">
+      <div class="pomodoro-card">
+        <!-- Mode Pills -->
+        <div class="pomo-modes">
+          <button id="pomo-mode-focus" class="pomo-mode-btn active" onclick="setPomoMode('focus')">Foco</button>
+          <button id="pomo-mode-short" class="pomo-mode-btn" onclick="setPomoMode('short')">Pausa Curta</button>
+          <button id="pomo-mode-long" class="pomo-mode-btn" onclick="setPomoMode('long')">Pausa Longa</button>
+        </div>
+
+        <!-- Clock -->
+        <div id="pomo-clock-display" class="pomo-clock">25:00</div>
+
+        <!-- Progress Track -->
+        <div class="pomo-progress-track">
+          <div id="pomo-progress-bar" class="pomo-progress-bar"></div>
+        </div>
+
+        <!-- Task Input -->
+        <div>
+          <input type="text" id="pomo-task-name" class="pomo-task-input" placeholder="📌 No que você vai focar agora? (ex: Revisão de Algoritmos)" maxlength="50">
+        </div>
+
+        <!-- Rounds Indicator -->
+        <div class="pomo-rounds">
+          <span>Ciclo</span>
+          <div id="round-dots-area" style="display:flex;gap:4px;">
+            <div class="round-dot current"></div>
+            <div class="round-dot"></div>
+            <div class="round-dot"></div>
+            <div class="round-dot"></div>
           </div>
-          <button id="btn-toggle-key" class="api-badge" onclick="toggleKeyBar()">⚙️ Configurar Gemini</button>
+          <span id="pomo-round-text">#1 de 4</span>
         </div>
 
-        <div id="key-bar" class="key-bar">
-          <input type="password" id="gemini-key-input" class="key-input" placeholder="Cole sua Google Gemini API Key aqui...">
-          <button onclick="saveApiKey()" style="background: var(--accent); color:#000; border:none; padding:6px 12px; border-radius:6px; font-weight:600; cursor:pointer;">Salvar</button>
+        <!-- Main Controls -->
+        <div class="pomo-controls">
+          <button id="btn-pomo-main" class="btn-pomo-main" onclick="togglePomoTimer()">INICIAR</button>
+          <button class="btn-pomo-sec" onclick="skipPomoCycle()" title="Avançar ciclo">Pular</button>
+          <button class="btn-pomo-sec" onclick="finishCurrentBlockNow()" title="Concluir e contabilizar agora">Concluir Bloco</button>
         </div>
 
-        <div id="chat-log" class="chat-log">
-          <div class="msg msg-bot">
-            <div class="msg-bubble bubble-bot">
-              Olá! Sou seu <strong>Coach Zen</strong>. Se a procrastinação ou o impulso de pegar o celular surgirem, clique nos atalhos rápidos ou pergunte qualquer coisa:
+        <!-- Sub Actions -->
+        <div class="pomo-footer-actions">
+          <button id="btn-sound-toggle" class="pomo-action-link" onclick="toggleRainSound()">
+            <span id="rain-icon">🌧️</span>
+            <span id="rain-txt">Chuva Zen: Desligada</span>
+          </button>
+          <span>•</span>
+          <button class="pomo-action-link" onclick="openPomoSettingsModal()">
+            ⚙️ Ajustar Tempos
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==========================================
+         TAB 3: COACH ZEN (CHATBOT GEMINI)
+         ========================================== -->
+    <div id="tab-chat" class="hidden">
+      <div class="chat-container">
+        <div class="chat-top">
+          <span style="font-size:0.75rem;font-weight:600;color:var(--text-secondary);">Coach de Atenção & Neurociência</span>
+          <span id="gemini-status-badge" class="brand-tag" onclick="toggleKeyBar()" style="cursor:pointer;">🟢 Gemini Flash-Lite Ativo</span>
+        </div>
+
+        <!-- Key bar opcional -->
+        <div id="key-bar" style="display:none;margin-bottom:12px;padding:8px;background:rgba(255,255,255,0.03);border-radius:8px;">
+          <input type="password" id="gemini-key-input" placeholder="Cole sua Google Gemini API Key se desejar trocar..." style="width:100%;background:rgba(0,0,0,0.4);border:1px solid var(--card-border);padding:6px 10px;color:#fff;border-radius:6px;font-size:0.75rem;">
+          <button onclick="salvarGeminiKeyManual()" class="btn-preset" style="margin-top:6px;">Salvar Chave</button>
+        </div>
+
+        <div id="chat-messages" class="chat-log-box">
+          <div class="chat-bubble-row bot">
+            <div class="chat-bubble bot">
+              Olá! Sou seu <strong>Coach Zen</strong>. Estou sincronizado com o diagnóstico do seu modelo preditivo. Em que posso te ajudar a destravar agora?
             </div>
           </div>
         </div>
 
-        <div class="chips-area">
-          <button class="chip chip-sos" onclick="sendQuickPrompt('sos')">🚨 SOS: Vontade incontrolável de rolar o feed</button>
-          <button class="chip" onclick="sendQuickPrompt('ansiedade')">⚡ Como conter a abstinência do celular?</button>
-          <button class="chip" onclick="sendQuickPrompt('sono')">😴 Dormi mal, como estudar hoje?</button>
-          <button class="chip" onclick="sendQuickPrompt('pomodoro')">⏱️ Como fazer meu 1º bloco de 25 min?</button>
+        <div class="chat-quick-chips">
+          <button class="quick-chip" onclick="sendQuickPrompt('sos')">🚨 SOS: Vontade incontrolável de rolar o feed</button>
+          <button class="quick-chip" onclick="sendQuickPrompt('ansiedade')">⚡ Inquietação sem o celular</button>
+          <button class="quick-chip" onclick="sendQuickPrompt('sono')">😴 Dormi mal, como focar?</button>
         </div>
 
-        <div class="chat-input-row">
-          <input type="text" id="chat-input-text" class="chat-input" placeholder="Escreva sua dúvida, desabafo ou matéria que vai estudar..." onkeydown="if(event.key==='Enter') handleChatSend()">
-          <button id="btn-chat-send" class="chat-send" onclick="handleChatSend()">Enviar</button>
+        <div class="chat-input-bar">
+          <input type="text" id="chat-input-text" class="chat-text-input" placeholder="Pergunte ao Coach ou desabafe..." onkeydown="if(event.key==='Enter') handleChatSend()">
+          <button class="chat-send-btn" onclick="handleChatSend()">Enviar</button>
         </div>
       </div>
     </div>
 
-    <!-- TAB 3: TIMER ZEN -->
-    <div id="tab-timer" class="hidden">
-      <div class="timer-container">
-        <h3 style="font-size: 0.85rem; text-transform: uppercase; color: var(--muted); letter-spacing: 0.05em;">Modo Foco Profundo</h3>
-        <div id="timer-clock" class="timer-clock">25:00</div>
-        <div class="timer-actions">
-          <button id="btn-timer-toggle" class="btn-timer-primary" onclick="toggleTimer()">Iniciar Bloco</button>
-          <button class="btn-timer-sec" onclick="setTimer(25)">25 min</button>
-          <button class="btn-timer-sec" onclick="setTimer(50)">50 min</button>
-          <button class="btn-timer-sec" onclick="setTimer(5)">Pausa (5 min)</button>
-        </div>
-        <br>
-        <button id="btn-sound" class="sound-toggle" onclick="toggleSound()">
-          <span id="sound-icon">🔇</span>
-          <span id="sound-txt">Som de Chuva / Ruído: Desligado</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- TAB 4: PLANO DE AÇÃO -->
-    <div id="tab-plan" class="hidden">
-      <h3 style="font-size: 0.85rem; text-transform: uppercase; color: var(--muted); letter-spacing: 0.05em;">Seu Checklist Anti-Procrastinação</h3>
-      <div id="plan-items" class="plan-list"></div>
-    </div>
-
-    <!-- TAB 5: ATIVIDADES (ESTUDO + TREINO) -->
+    <!-- ==========================================
+         TAB 4: ATIVIDADES (TREINO & ESTUDO)
+         ========================================== -->
     <div id="tab-ativ" class="hidden">
-      <!-- Registrar Estudo -->
-      <div class="activity-section">
-        <h3>📚 Registrar Sessão de Estudo</h3>
-        <div class="activity-form">
-          <div class="activity-field">
-            <label>Data</label>
-            <input type="date" id="study-date">
+      <div class="activity-grid">
+        <!-- Banner Pomodoro Sync -->
+        <div class="pomo-sync-banner">
+          <div>
+            <strong>⏱️ Contabilização Automática:</strong> Suas sessões de estudo são somadas automaticamente ao usar a aba <strong>Pomodoro</strong>.
           </div>
-          <div class="activity-field">
-            <label>Duração (min)</label>
-            <input type="number" id="study-duration" min="1" max="720" value="25" placeholder="25">
-          </div>
-          <div class="activity-field" style="flex: 2;">
-            <label>O que estudou? (opcional)</label>
-            <input type="text" id="study-note" placeholder="Ex: Capítulo 3 de ML" maxlength="60">
-          </div>
-          <button class="btn-log" onclick="logActivity('study')">+ Registrar</button>
+          <button class="btn-preset" onclick="showTab('pomo')" style="background:var(--accent);color:#000;font-weight:700;">Ir para o Pomodoro →</button>
         </div>
-        <div id="study-history" class="history-list"></div>
-      </div>
 
-      <!-- Registrar Treino -->
-      <div class="activity-section">
-        <h3>🏋️ Registrar Atividade Física</h3>
-        <div class="activity-form">
-          <div class="activity-field">
-            <label>Data</label>
-            <input type="date" id="train-date">
+        <!-- Registro de Atividade Física (Treinos) -->
+        <div class="card">
+          <div class="card-title">🏋️ Registrar Atividade Física</div>
+          <div class="form-inline">
+            <div class="form-field">
+              <label>Data</label>
+              <input type="date" id="train-date">
+            </div>
+            <div class="form-field">
+              <label>Duração (min)</label>
+              <input type="number" id="train-duration" min="5" max="360" value="45">
+            </div>
+            <div class="form-field">
+              <label>Modalidade</label>
+              <select id="train-type">
+                <option value="Musculação">Musculação</option>
+                <option value="Corrida">Corrida</option>
+                <option value="Caminhada">Caminhada</option>
+                <option value="Funcional / Calistenia">Funcional / Calistenia</option>
+                <option value="Esporte">Esporte</option>
+                <option value="Outro">Outro</option>
+              </select>
+            </div>
+            <button class="btn-action-success" onclick="salvarTreinoManual()">+ Salvar Treino</button>
           </div>
-          <div class="activity-field">
-            <label>Duração (min)</label>
-            <input type="number" id="train-duration" min="1" max="480" value="30" placeholder="30">
-          </div>
-          <div class="activity-field">
-            <label>Tipo</label>
-            <select id="train-type">
-              <option value="Musculação">Musculação</option>
-              <option value="Corrida">Corrida</option>
-              <option value="Caminhada">Caminhada</option>
-              <option value="Funcional">Funcional</option>
-              <option value="Esporte">Esporte</option>
-              <option value="Outro">Outro</option>
-            </select>
-          </div>
-          <button class="btn-log" onclick="logActivity('train')" style="background: var(--success);">+ Registrar</button>
+          <div id="train-history-list" class="history-scroll"></div>
         </div>
-        <div id="train-history" class="history-list"></div>
-      </div>
 
-      <div style="text-align: center; margin-top: 8px;">
-        <button class="btn-log-danger" onclick="if(confirm('Apagar todo o histórico de atividades?')){localStorage.removeItem('focusActivities');renderHistories();renderReport();}">🗑️ Limpar Histórico</button>
+        <!-- Registro Manual de Estudo (Avulso) -->
+        <div class="card">
+          <div class="card-title">📚 Registro Manual de Estudo (Opcional)</div>
+          <div class="form-inline">
+            <div class="form-field">
+              <label>Data</label>
+              <input type="date" id="study-date">
+            </div>
+            <div class="form-field">
+              <label>Duração (min)</label>
+              <input type="number" id="study-duration" min="5" max="600" value="30">
+            </div>
+            <div class="form-field" style="flex:2;">
+              <label>Matéria / Assunto</label>
+              <input type="text" id="study-note" placeholder="Ex: Exercícios de Álgebra">
+            </div>
+            <button class="btn-action-primary" onclick="salvarEstudoManual()">+ Registrar</button>
+          </div>
+          <div id="study-history-list" class="history-scroll"></div>
+        </div>
+
+        <div style="text-align:right;">
+          <button onclick="limparTodoHistorico()" style="background:none;border:none;color:var(--danger);font-size:0.72rem;cursor:pointer;">🗑️ Limpar todo o histórico</button>
+        </div>
       </div>
     </div>
 
-    <!-- TAB 6: RELATÓRIO -->
+    <!-- ==========================================
+         TAB 5: RELATÓRIO ANALYTICS & STREAKS
+         ========================================== -->
     <div id="tab-report" class="hidden">
-      <!-- Cards de Resumo -->
-      <div class="report-grid">
-        <div class="report-card">
-          <div class="rc-icon">📚</div>
-          <div class="rc-value" id="rpt-study-hours">0h</div>
-          <div class="rc-label">Horas de Estudo</div>
+      <!-- 4 Cards de Métricas -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-icon">📚</div>
+          <div id="rpt-study-hours" class="metric-value">0h</div>
+          <div class="metric-label">Horas de Estudo (Pomodoro)</div>
         </div>
-        <div class="report-card">
-          <div class="rc-icon">🏋️</div>
-          <div class="rc-value" id="rpt-train-days">0</div>
-          <div class="rc-label">Dias Treinados</div>
+        <div class="metric-card">
+          <div class="metric-icon">🏋️</div>
+          <div id="rpt-train-days" class="metric-value">0</div>
+          <div class="metric-label">Dias Treinados</div>
         </div>
-        <div class="report-card">
-          <div class="rc-icon">📖</div>
-          <div class="rc-value" id="rpt-study-sessions">0</div>
-          <div class="rc-label">Sessões de Estudo</div>
+        <div class="metric-card">
+          <div class="metric-icon">⏱️</div>
+          <div id="rpt-study-sessions" class="metric-value">0</div>
+          <div class="metric-label">Sessões de Foco</div>
         </div>
-        <div class="report-card">
-          <div class="rc-icon">⏱️</div>
-          <div class="rc-value" id="rpt-train-hours">0h</div>
-          <div class="rc-label">Horas de Treino</div>
+        <div class="metric-card">
+          <div class="metric-icon">🔥</div>
+          <div id="rpt-train-hours" class="metric-value">0h</div>
+          <div class="metric-label">Horas de Treino</div>
         </div>
       </div>
 
       <!-- Streaks -->
-      <div class="streak-box">
-        <h3>🔥 Streaks (Sequência Consecutiva)</h3>
-        <div class="streak-row">
-          <div class="streak-emoji">📚</div>
-          <div class="streak-info">
-            <div class="si-label">Estudo</div>
-            <div class="si-sub">Dias consecutivos estudando</div>
+      <div class="streak-container">
+        <div class="card-title">🔥 Sequência Consecutiva (Streaks)</div>
+        
+        <div class="streak-line">
+          <span style="font-size:1.3rem;">📚</span>
+          <div style="flex:1;">
+            <div style="font-size:0.8rem;font-weight:600;">Estudo & Foco</div>
+            <div style="font-size:0.68rem;color:var(--text-tertiary);">Dias consecutivos com sessões concluídas</div>
+            <div id="study-tiles" class="streak-tiles"></div>
           </div>
-          <div class="streak-count" id="rpt-study-streak">0</div>
-          <div class="streak-fire" id="rpt-study-fire"></div>
+          <div style="display:flex;align-items:center;gap:4px;">
+            <span id="rpt-study-streak" class="streak-num">0</span>
+            <span id="rpt-study-fire"></span>
+          </div>
         </div>
-        <div id="study-streak-dots" class="streak-dots"></div>
 
-        <div class="streak-row" style="margin-top: 10px;">
-          <div class="streak-emoji">🏋️</div>
-          <div class="streak-info">
-            <div class="si-label">Treino</div>
-            <div class="si-sub">Dias consecutivos treinando</div>
+        <div class="streak-line">
+          <span style="font-size:1.3rem;">🏋️</span>
+          <div style="flex:1;">
+            <div style="font-size:0.8rem;font-weight:600;">Atividade Física</div>
+            <div style="font-size:0.68rem;color:var(--text-tertiary);">Dias consecutivos de treino registrado</div>
+            <div id="train-tiles" class="streak-tiles"></div>
           </div>
-          <div class="streak-count" id="rpt-train-streak">0</div>
-          <div class="streak-fire" id="rpt-train-fire"></div>
+          <div style="display:flex;align-items:center;gap:4px;">
+            <span id="rpt-train-streak" class="streak-num">0</span>
+            <span id="rpt-train-fire"></span>
+          </div>
         </div>
-        <div id="train-streak-dots" class="streak-dots"></div>
       </div>
 
-      <!-- Gráfico Semanal -->
-      <div class="report-weekly">
-        <h3>📊 Últimos 7 Dias</h3>
-        <div id="weekly-chart" class="bar-chart"></div>
-        <div class="legend-row">
-          <span><span class="legend-dot" style="background:var(--accent);"></span>Estudo</span>
-          <span><span class="legend-dot" style="background:var(--success);"></span>Treino</span>
+      <!-- Weekly Chart -->
+      <div class="chart-container">
+        <div class="card-title">
+          <span>📊 Dedicação nos Últimos 7 Dias</span>
+          <div style="display:flex;gap:12px;font-size:0.68rem;font-weight:400;text-transform:none;">
+            <span><span style="display:inline-block;width:8px;height:8px;background:var(--accent);border-radius:2px;margin-right:4px;"></span>Estudo</span>
+            <span><span style="display:inline-block;width:8px;height:8px;background:var(--success);border-radius:2px;margin-right:4px;"></span>Treino</span>
+          </div>
         </div>
+        <div id="weekly-bars-area" class="chart-bars"></div>
       </div>
     </div>
 
+    <!-- ==========================================
+         TAB 6: PLANO DE AÇÃO
+         ========================================== -->
+    <div id="tab-plan" class="hidden">
+      <div class="card">
+        <div class="card-title">Checklist Prático Anti-Dispersão</div>
+        <div id="plan-items" class="checklist-container"></div>
+      </div>
+    </div>
+
+  </div> <!-- /container -->
+
+  <!-- Modal Configurações do Pomodoro -->
+  <div id="modal-pomo-settings" class="modal-overlay" onclick="if(event.target===this) closePomoSettingsModal()">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>⚙️ Configuração do Pomodoro</h3>
+        <button class="btn-close-modal" onclick="closePomoSettingsModal()">✕</button>
+      </div>
+
+      <div class="settings-grid">
+        <div class="settings-field">
+          <label>Foco (min)</label>
+          <input type="number" id="cfg-pomo-focus" min="1" max="120" value="25">
+        </div>
+        <div class="settings-field">
+          <label>Pausa Curta</label>
+          <input type="number" id="cfg-pomo-short" min="1" max="60" value="5">
+        </div>
+        <div class="settings-field">
+          <label>Pausa Longa</label>
+          <input type="number" id="cfg-pomo-long" min="1" max="60" value="15">
+        </div>
+      </div>
+
+      <div style="margin-bottom:18px;">
+        <label style="font-size:0.75rem;color:var(--text-secondary);display:flex;align-items:center;gap:8px;cursor:pointer;">
+          <input type="checkbox" id="cfg-pomo-sound" checked accent-color="var(--accent)">
+          Tocar sinal sonoro ao finalizar bloco
+        </label>
+      </div>
+
+      <button class="btn-save-settings" onclick="salvarConfigPomodoro()">Salvar & Aplicar</button>
+    </div>
   </div>
 
   <script>
+    /* ========================================================
+       1. CÁLCULO PREDITIVO (MODELO REGRESSÃO LOGÍSTICA REAL)
+       ======================================================== */
     const B0 = -4.889100598331315;
     const B_HORAS = 0.14603957;
     const B_DOPAMINA = 0.35412845;
@@ -1046,7 +1383,6 @@ HTML_PAGE = """<!DOCTYPE html>
 
       const pill = document.getElementById('status-pill');
       const desc = document.getElementById('status-desc');
-      const win = document.getElementById('quick-win-text');
 
       if (currentProb < 35) {
         gauge.setAttribute('stroke', 'var(--success)');
@@ -1054,21 +1390,18 @@ HTML_PAGE = """<!DOCTYPE html>
         pill.style.background = 'rgba(16, 185, 129, 0.15)';
         pill.style.color = 'var(--success)';
         desc.textContent = 'Autocontrole preservado. A probabilidade de você abandonar a tarefa de estudo por dispersão é mínima.';
-        win.textContent = 'Tudo equilibrado. Inicie um bloco Pomodoro para aproveitar este estado.';
       } else if (currentProb < 60) {
         gauge.setAttribute('stroke', 'var(--warning)');
         pill.textContent = 'Atenção Vulnerável';
         pill.style.background = 'rgba(245, 158, 11, 0.15)';
         pill.style.color = 'var(--warning)';
         desc.textContent = 'Atenção vulnerável: ao menor sinal de cansaço ou tédio, há tendência forte de checar o celular.';
-        win.textContent = 'Reduzir 1.5h de tela diária pode derrubar seu risco em ~12%.';
       } else {
         gauge.setAttribute('stroke', 'var(--danger)');
         pill.textContent = 'Alto Risco de Procrastinação';
         pill.style.background = 'rgba(244, 63, 94, 0.15)';
         pill.style.color = 'var(--danger)';
         desc.textContent = 'Alerta de saturação dopaminérgica: alto índice de scroll e abstinência sem smartphone sequestram o foco.';
-        win.textContent = 'Colocar o celular em outro cômodo derruba o risco imediato para menos da metade.';
       }
 
       updatePlan(h, d, a, s);
@@ -1080,6 +1413,7 @@ HTML_PAGE = """<!DOCTYPE html>
       if (parseFloat(h.value) > 1.5) h.value = Math.max(1.0, parseFloat(h.value) - 1.5);
       if (parseInt(a.value) > 2) a.value = parseInt(a.value) - 1;
       recalcular();
+      showToast('⚡ Simulação aplicada: -1.5h de tela e menor abstinência!');
     }
 
     function aplicarPreset(h, d, a, s, c) {
@@ -1091,96 +1425,567 @@ HTML_PAGE = """<!DOCTYPE html>
       recalcular();
     }
 
-    function showTab(tab) {
-      const tabs = ['diag', 'chat', 'timer', 'plan', 'ativ', 'report'];
-      tabs.forEach(t => {
-        document.getElementById('tab-' + t).classList.toggle('hidden', t !== tab);
-        document.getElementById('nav-' + t).classList.toggle('active', t === tab);
-      });
-      if (tab === 'ativ') renderHistories();
-      if (tab === 'report') renderReport();
-    }
-
     function updatePlan(h, d, a, s) {
       const plan = document.getElementById('plan-items');
       const items = [
         "Guardar o celular fora do campo de visão durante o bloco de foco",
-        "Dividir o estudo em metas pequenas com prazo definido (máx 25-50 min)"
+        "Dividir a matéria em blocos Pomodoro configurados de foco"
       ];
       if (d >= 3) items.push("Ativar modo 'Escala de Cinza' nas opções de acessibilidade do celular");
       if (a >= 3) items.push("Esperar 90 segundos respirando fundo ao sentir vontade impulsiva de checar notificações");
       if (s >= 3) items.push("Cessar exposição a telas 40 minutos antes do horário de dormir");
 
       plan.innerHTML = items.map(text => `
-        <label class="plan-item">
+        <label class="check-item">
           <input type="checkbox">
           <span>${text}</span>
         </label>
       `).join('');
     }
 
-    function toggleKeyBar() {
-      const bar = document.getElementById('key-bar');
-      bar.classList.toggle('active');
-      if (bar.classList.contains('active')) {
-        document.getElementById('gemini-key-input').value = geminiApiKey;
+    /* ========================================================
+       2. NAVEGAÇÃO DE ABAS
+       ======================================================== */
+    function showTab(tab) {
+      const tabs = ['diag', 'pomo', 'chat', 'ativ', 'report', 'plan'];
+      tabs.forEach(t => {
+        const el = document.getElementById('tab-' + t);
+        const nav = document.getElementById('nav-' + t);
+        if (el) el.classList.toggle('hidden', t !== tab);
+        if (nav) nav.classList.toggle('active', t === tab);
+      });
+      if (tab === 'ativ') renderActivityHistories();
+      if (tab === 'report') renderReportAnalytics();
+    }
+
+    /* ========================================================
+       3. SISTEMA DE TOAST
+       ======================================================== */
+    let toastTimeout = null;
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.innerHTML = msg;
+      toast.classList.add('show');
+      if (toastTimeout) clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => { toast.classList.remove('show'); }, 3000);
+    }
+
+    /* ========================================================
+       4. POMODORO ENGINE COMPLETA & CONFIGURÁVEL
+       ======================================================== */
+    let pomoSettings = {
+      focusMin: 25,
+      shortMin: 5,
+      longMin: 15,
+      sound: true
+    };
+    try {
+      const savedCfg = localStorage.getItem('pomodoroConfig');
+      if (savedCfg) pomoSettings = Object.assign(pomoSettings, JSON.parse(savedCfg));
+    } catch(e){}
+
+    let currentPomoMode = 'focus'; // 'focus', 'short', 'long'
+    let pomoTimerInt = null;
+    let pomoTotalSeconds = pomoSettings.focusMin * 60;
+    let pomoInitialSeconds = pomoTotalSeconds;
+    let pomoRound = 1;
+
+    function initPomoDisplay() {
+      pomoTotalSeconds = getPomoDuration(currentPomoMode) * 60;
+      pomoInitialSeconds = pomoTotalSeconds;
+      updatePomoClockDisplay();
+      updatePomoProgressBar();
+      updatePomoRoundUI();
+    }
+
+    function getPomoDuration(mode) {
+      if (mode === 'focus') return pomoSettings.focusMin;
+      if (mode === 'short') return pomoSettings.shortMin;
+      if (mode === 'long') return pomoSettings.longMin;
+      return 25;
+    }
+
+    function formatClock(sec) {
+      const m = Math.floor(sec / 60).toString().padStart(2, '0');
+      const s = (sec % 60).toString().padStart(2, '0');
+      return m + ':' + s;
+    }
+
+    function updatePomoClockDisplay() {
+      document.getElementById('pomo-clock-display').textContent = formatClock(pomoTotalSeconds);
+      document.title = `${formatClock(pomoTotalSeconds)} - ${currentPomoMode === 'focus' ? 'Foco' : 'Pausa'}`;
+    }
+
+    function updatePomoProgressBar() {
+      const bar = document.getElementById('pomo-progress-bar');
+      const pct = pomoInitialSeconds > 0 ? ((pomoInitialSeconds - pomoTotalSeconds) / pomoInitialSeconds) * 100 : 0;
+      bar.style.width = Math.min(100, Math.max(0, pct)) + '%';
+      if (currentPomoMode === 'focus') {
+        bar.style.background = 'var(--accent)';
+      } else {
+        bar.style.background = 'var(--success)';
       }
     }
 
-    function saveApiKey() {
+    function updatePomoRoundUI() {
+      const dotsArea = document.getElementById('round-dots-area');
+      const txt = document.getElementById('pomo-round-text');
+      txt.textContent = `#${pomoRound} de 4`;
+      let dotsHtml = '';
+      for (let i = 1; i <= 4; i++) {
+        if (i < pomoRound) dotsHtml += '<div class="round-dot done"></div>';
+        else if (i === pomoRound) dotsHtml += '<div class="round-dot current"></div>';
+        else dotsHtml += '<div class="round-dot"></div>';
+      }
+      dotsArea.innerHTML = dotsHtml;
+    }
+
+    function setPomoMode(mode) {
+      if (pomoTimerInt) {
+        clearInterval(pomoTimerInt);
+        pomoTimerInt = null;
+        document.getElementById('btn-pomo-main').textContent = 'INICIAR';
+      }
+      currentPomoMode = mode;
+      ['focus', 'short', 'long'].forEach(m => {
+        const btn = document.getElementById('pomo-mode-' + m);
+        if (btn) btn.classList.toggle('active', m === mode);
+      });
+      initPomoDisplay();
+    }
+
+    function togglePomoTimer() {
+      const btn = document.getElementById('btn-pomo-main');
+      if (pomoTimerInt) {
+        clearInterval(pomoTimerInt);
+        pomoTimerInt = null;
+        btn.textContent = 'CONTINUAR';
+      } else {
+        btn.textContent = 'PAUSAR';
+        pomoTimerInt = setInterval(() => {
+          if (pomoTotalSeconds > 0) {
+            pomoTotalSeconds--;
+            updatePomoClockDisplay();
+            updatePomoProgressBar();
+          } else {
+            clearInterval(pomoTimerInt);
+            pomoTimerInt = null;
+            btn.textContent = 'INICIAR';
+            onPomoCycleFinished();
+          }
+        }, 1000);
+      }
+    }
+
+    function skipPomoCycle() {
+      if (confirm('Deseja pular este ciclo?')) {
+        if (pomoTimerInt) { clearInterval(pomoTimerInt); pomoTimerInt = null; }
+        document.getElementById('btn-pomo-main').textContent = 'INICIAR';
+        advancePomoCycle(false);
+      }
+    }
+
+    function finishCurrentBlockNow() {
+      // Permite contabilizar o tempo transcorrido no bloco atual
+      const transcorridoSeg = pomoInitialSeconds - pomoTotalSeconds;
+      const transcorridoMin = Math.round(transcorridoSeg / 60);
+      
+      if (transcorridoMin < 1) {
+        alert('Você precisa realizar ao menos 1 minuto de foco para registrar!');
+        return;
+      }
+
+      if (pomoTimerInt) { clearInterval(pomoTimerInt); pomoTimerInt = null; }
+      document.getElementById('btn-pomo-main').textContent = 'INICIAR';
+
+      if (currentPomoMode === 'focus') {
+        const taskName = document.getElementById('pomo-task-name').value.trim() || 'Bloco Pomodoro';
+        registrarSessaoEstudoNoHistorico(transcorridoMin, taskName);
+        showToast(`🎉 <strong>${transcorridoMin} min</strong> de foco contabilizados no seu relatório!`);
+      }
+      advancePomoCycle(true);
+    }
+
+    function onPomoCycleFinished() {
+      if (pomoSettings.sound) playZenChime();
+
+      if (currentPomoMode === 'focus') {
+        const durationMin = Math.round(pomoInitialSeconds / 60);
+        const taskName = document.getElementById('pomo-task-name').value.trim() || 'Bloco Pomodoro';
+        registrarSessaoEstudoNoHistorico(durationMin, taskName);
+        showToast(`🎉 <strong>Bloco de ${durationMin} min</strong> concluído e contabilizado no seu relatório!`);
+        advancePomoCycle(true);
+      } else {
+        showToast('⏰ Pausa concluída! Hora de focar.');
+        setPomoMode('focus');
+      }
+    }
+
+    function advancePomoCycle(completed) {
+      if (currentPomoMode === 'focus') {
+        if (pomoRound >= 4) {
+          pomoRound = 1;
+          setPomoMode('long');
+        } else {
+          pomoRound++;
+          setPomoMode('short');
+        }
+      } else {
+        setPomoMode('focus');
+      }
+    }
+
+    // Modal Configurações
+    function openPomoSettingsModal() {
+      document.getElementById('cfg-pomo-focus').value = pomoSettings.focusMin;
+      document.getElementById('cfg-pomo-short').value = pomoSettings.shortMin;
+      document.getElementById('cfg-pomo-long').value = pomoSettings.longMin;
+      document.getElementById('cfg-pomo-sound').checked = pomoSettings.sound;
+      document.getElementById('modal-pomo-settings').classList.add('open');
+    }
+
+    function closePomoSettingsModal() {
+      document.getElementById('modal-pomo-settings').classList.remove('open');
+    }
+
+    function salvarConfigPomodoro() {
+      const f = parseInt(document.getElementById('cfg-pomo-focus').value) || 25;
+      const s = parseInt(document.getElementById('cfg-pomo-short').value) || 5;
+      const l = parseInt(document.getElementById('cfg-pomo-long').value) || 15;
+      const snd = document.getElementById('cfg-pomo-sound').checked;
+
+      pomoSettings = { focusMin: f, shortMin: s, longMin: l, sound: snd };
+      localStorage.setItem('pomodoroConfig', JSON.stringify(pomoSettings));
+      closePomoSettingsModal();
+      initPomoDisplay();
+      showToast('⚙️ Configurações do Pomodoro salvas com sucesso!');
+    }
+
+    // Som de sino relaxante ao terminar (Web Audio)
+    function playZenChime() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(587.33, ctx.currentTime); // D5
+        osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.3); // A5
+        gain.gain.setValueAtTime(0.3, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.8);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 1.8);
+      } catch(e){}
+    }
+
+    // Gerador de Som de Chuva Minimalista
+    let rainAudioCtx = null;
+    let rainNode = null;
+    let isRainOn = false;
+
+    function toggleRainSound() {
+      const icon = document.getElementById('rain-icon');
+      const txt = document.getElementById('rain-txt');
+      const btn = document.getElementById('btn-sound-toggle');
+
+      if (!isRainOn) {
+        rainAudioCtx = rainAudioCtx || new (window.AudioContext || window.webkitAudioContext)();
+        const buf = rainAudioCtx.createBuffer(1, rainAudioCtx.sampleRate * 2, rainAudioCtx.sampleRate);
+        const out = buf.getChannelData(0);
+        let last = 0;
+        for (let i = 0; i < out.length; i++) {
+          const w = Math.random() * 2 - 1;
+          out[i] = (last + (0.02 * w)) / 1.02;
+          last = out[i];
+          out[i] *= 3.5;
+        }
+        rainNode = rainAudioCtx.createBufferSource();
+        rainNode.buffer = buf;
+        rainNode.loop = true;
+        const gain = rainAudioCtx.createGain();
+        gain.gain.value = 0.08;
+        rainNode.connect(gain);
+        gain.connect(rainAudioCtx.destination);
+        rainNode.start();
+        isRainOn = true;
+        btn.classList.add('active');
+        icon.textContent = '🌧️';
+        txt.textContent = 'Chuva Zen: Ligada';
+      } else {
+        if (rainNode) { rainNode.stop(); rainNode.disconnect(); rainNode = null; }
+        isRainOn = false;
+        btn.classList.remove('active');
+        icon.textContent = '🌧️';
+        txt.textContent = 'Chuva Zen: Desligada';
+      }
+    }
+
+    /* ========================================================
+       5. SISTEMA DE PERSISTÊNCIA & ATIVIDADES (localStorage)
+       ======================================================== */
+    function getActivities() {
+      try { return JSON.parse(localStorage.getItem('focusActivities') || '[]'); }
+      catch(e) { return []; }
+    }
+    function saveActivities(arr) { localStorage.setItem('focusActivities', JSON.stringify(arr)); }
+
+    function getTodayString() {
+      return new Date().toISOString().split('T')[0];
+    }
+
+    // Inicializar campos de data
+    (function initDatePickers(){
+      const today = getTodayString();
+      const td = document.getElementById('train-date');
+      const sd = document.getElementById('study-date');
+      if (td) td.value = today;
+      if (sd) sd.value = today;
+    })();
+
+    // Contabiliza sessão de estudo gerada pelo Pomodoro
+    function registrarSessaoEstudoNoHistorico(minutos, nota) {
+      const acts = getActivities();
+      acts.push({
+        type: 'study',
+        date: getTodayString(),
+        duration: minutos,
+        note: nota,
+        timestamp: Date.now()
+      });
+      saveActivities(acts);
+    }
+
+    function salvarEstudoManual() {
+      const date = document.getElementById('study-date').value || getTodayString();
+      const dur = parseInt(document.getElementById('study-duration').value);
+      const note = document.getElementById('study-note').value.trim() || 'Estudo manual';
+      if (!dur || dur < 1) { alert('Informe a duração em minutos.'); return; }
+
+      const acts = getActivities();
+      acts.push({ type: 'study', date, duration: dur, note, timestamp: Date.now() });
+      saveActivities(acts);
+      renderActivityHistories();
+      showToast('✅ Sessão de estudo registrada!');
+      document.getElementById('study-note').value = '';
+    }
+
+    function salvarTreinoManual() {
+      const date = document.getElementById('train-date').value || getTodayString();
+      const dur = parseInt(document.getElementById('train-duration').value);
+      const type = document.getElementById('train-type').value;
+      if (!dur || dur < 1) { alert('Informe a duração em minutos.'); return; }
+
+      const acts = getActivities();
+      acts.push({ type: 'train', date, duration: dur, note: type, timestamp: Date.now() });
+      saveActivities(acts);
+      renderActivityHistories();
+      showToast('🏋️ Treino registrado com sucesso!');
+    }
+
+    function deletarAtividade(ts) {
+      let acts = getActivities().filter(a => a.timestamp !== ts);
+      saveActivities(acts);
+      renderActivityHistories();
+    }
+
+    function limparTodoHistorico() {
+      if (confirm('Tem certeza que deseja apagar todo o histórico de atividades e relatórios?')) {
+        localStorage.removeItem('focusActivities');
+        renderActivityHistories();
+        renderReportAnalytics();
+        showToast('🗑️ Histórico limpo.');
+      }
+    }
+
+    function formatDateFriendly(ds) {
+      if (!ds) return '';
+      const [y, m, d] = ds.split('-');
+      return `${d}/${m}`;
+    }
+
+    function renderActivityHistories() {
+      const acts = getActivities();
+      const sList = document.getElementById('study-history-list');
+      const tList = document.getElementById('train-history-list');
+
+      const studies = acts.filter(a => a.type === 'study').sort((a,b) => b.timestamp - a.timestamp).slice(0, 10);
+      const trains = acts.filter(a => a.type === 'train').sort((a,b) => b.timestamp - a.timestamp).slice(0, 10);
+
+      if (sList) {
+        sList.innerHTML = studies.length === 0
+          ? '<div style="color:var(--text-tertiary);font-size:0.75rem;text-align:center;padding:12px;">Nenhum estudo ainda. Execute um bloco no <strong>Pomodoro</strong>! ⏱️</div>'
+          : studies.map(s => `
+            <div class="history-row">
+              <span class="history-date">${formatDateFriendly(s.date)}</span>
+              <span class="history-dur">${s.duration} min</span>
+              <span class="history-desc">${s.note}</span>
+              <button onclick="deletarAtividade(${s.timestamp})" style="background:none;border:none;color:var(--text-tertiary);cursor:pointer;" title="Excluir">✕</button>
+            </div>
+          `).join('');
+      }
+
+      if (tList) {
+        tList.innerHTML = trains.length === 0
+          ? '<div style="color:var(--text-tertiary);font-size:0.75rem;text-align:center;padding:12px;">Nenhum treino registrado. Registre seu exercício de hoje! 🏋️</div>'
+          : trains.map(t => `
+            <div class="history-row">
+              <span class="history-date">${formatDateFriendly(t.date)}</span>
+              <span class="history-dur" style="color:var(--success);">${t.duration} min</span>
+              <span class="history-desc">${t.note}</span>
+              <button onclick="deletarAtividade(${t.timestamp})" style="background:none;border:none;color:var(--text-tertiary);cursor:pointer;" title="Excluir">✕</button>
+            </div>
+          `).join('');
+      }
+    }
+
+    /* ========================================================
+       6. RELATÓRIO ANALYTICS & STREAKS
+       ======================================================== */
+    function renderReportAnalytics() {
+      const acts = getActivities();
+      const studies = acts.filter(a => a.type === 'study');
+      const trains = acts.filter(a => a.type === 'train');
+
+      const studyMin = studies.reduce((s, a) => s + a.duration, 0);
+      const trainMin = trains.reduce((s, a) => s + a.duration, 0);
+      const uniqueTrainDays = new Set(trains.map(a => a.date)).size;
+
+      document.getElementById('rpt-study-hours').textContent = (studyMin / 60).toFixed(1) + 'h';
+      document.getElementById('rpt-train-days').textContent = uniqueTrainDays;
+      document.getElementById('rpt-study-sessions').textContent = studies.length;
+      document.getElementById('rpt-train-hours').textContent = (trainMin / 60).toFixed(1) + 'h';
+
+      // Streaks
+      const sStreak = calcStreak(studies);
+      const tStreak = calcStreak(trains);
+
+      document.getElementById('rpt-study-streak').textContent = sStreak;
+      document.getElementById('rpt-train-streak').textContent = tStreak;
+      document.getElementById('rpt-study-fire').textContent = sStreak >= 3 ? '🔥' : '';
+      document.getElementById('rpt-train-fire').textContent = tStreak >= 3 ? '🔥' : '';
+
+      renderTiles('study-tiles', studies);
+      renderTiles('train-tiles', trains);
+      renderWeeklyBars(acts);
+    }
+
+    function calcStreak(entries) {
+      const dates = [...new Set(entries.map(e => e.date))].sort().reverse();
+      if (dates.length === 0) return 0;
+
+      const today = getTodayString();
+      const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+
+      if (dates[0] !== today && dates[0] !== yesterday) return 0;
+
+      let count = 1;
+      for (let i = 1; i < dates.length; i++) {
+        const d1 = new Date(dates[i-1] + 'T12:00:00');
+        const d2 = new Date(dates[i] + 'T12:00:00');
+        const diffDays = Math.round((d1 - d2) / 86400000);
+        if (diffDays === 1) count++;
+        else break;
+      }
+      return count;
+    }
+
+    function renderTiles(targetId, entries) {
+      const el = document.getElementById(targetId);
+      const dateSet = new Set(entries.map(e => e.date));
+      const today = new Date();
+      let html = '';
+      for (let i = 13; i >= 0; i--) {
+        const d = new Date(today);
+        d.setDate(d.getDate() - i);
+        const ds = d.toISOString().split('T')[0];
+        const isAct = dateSet.has(ds);
+        const isTod = i === 0;
+        html += `<div class="streak-tile${isAct ? ' active' : ''}${isTod ? ' today' : ''}" title="${formatDateFriendly(ds)}: ${isAct ? 'Ativo' : 'Sem registro'}"></div>`;
+      }
+      el.innerHTML = html;
+    }
+
+    function renderWeeklyBars(acts) {
+      const area = document.getElementById('weekly-bars-area');
+      const today = new Date();
+      const days = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+      let maxMin = 1;
+      const data = [];
+
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date(today);
+        d.setDate(d.getDate() - i);
+        const ds = d.toISOString().split('T')[0];
+        const studySum = acts.filter(a => a.type === 'study' && a.date === ds).reduce((s, a) => s + a.duration, 0);
+        const trainSum = acts.filter(a => a.type === 'train' && a.date === ds).reduce((s, a) => s + a.duration, 0);
+        const total = studySum + trainSum;
+        if (total > maxMin) maxMin = total;
+        data.push({ label: days[d.getDay()], study: studySum, train: trainSum, isToday: i === 0 });
+      }
+
+      area.innerHTML = data.map(d => {
+        const sH = Math.round((d.study / maxMin) * 90);
+        const tH = Math.round((d.train / maxMin) * 90);
+        const total = d.study + d.train;
+        return `
+          <div class="chart-col">
+            <span class="col-val">${total > 0 ? total + 'm' : ''}</span>
+            <div class="col-bars-stack">
+              <div class="col-seg study" style="height:${sH}px;"></div>
+              <div class="col-seg train" style="height:${tH}px;"></div>
+            </div>
+            <span class="col-label" style="${d.isToday ? 'color:var(--accent);font-weight:700;' : ''}">${d.label}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    /* ========================================================
+       7. COACH ZEN (CHATBOT GEMINI INTEGRATION)
+       ======================================================== */
+    function toggleKeyBar() {
+      const bar = document.getElementById('key-bar');
+      bar.style.display = bar.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function salvarGeminiKeyManual() {
       const val = document.getElementById('gemini-key-input').value.trim();
       geminiApiKey = val;
       localStorage.setItem('GEMINI_API_KEY', val);
-      document.getElementById('key-bar').classList.remove('active');
-      updateKeyBadge();
-      appendChat('bot', val ? '✅ <strong>Gemini API conectada com sucesso!</strong> Agora tenho acesso ao modelo de 1 milhão de tokens.' : 'ℹ️ Modo offline restaurado.');
+      toggleKeyBar();
+      showToast(val ? '🟢 Chave Gemini salva!' : 'Modo padrão restaurado.');
     }
 
-    function updateKeyBadge() {
-      const btn = document.getElementById('btn-toggle-key');
-      if (geminiApiKey) {
-        btn.textContent = '🟢 Gemini Ativo';
-        btn.style.color = '#10b981';
-      } else {
-        btn.textContent = '⚙️ Configurar Gemini';
-        btn.style.color = 'var(--accent)';
-      }
-    }
-
-    // CHATBOT ENGINE COM GEMINI API E FALLBACK
-    function appendChat(role, text) {
-      const log = document.getElementById('chat-log');
-      const msg = document.createElement('div');
-      msg.className = role === 'bot' ? 'msg msg-bot' : 'msg msg-user';
-      msg.innerHTML = `<div class="msg-bubble ${role === 'bot' ? 'bubble-bot' : 'bubble-user'}">${text}</div>`;
-      log.appendChild(msg);
-      log.scrollTop = log.scrollHeight;
+    function appendChatMessage(role, text) {
+      const box = document.getElementById('chat-messages');
+      const row = document.createElement('div');
+      row.className = `chat-bubble-row ${role}`;
+      row.innerHTML = `<div class="chat-bubble ${role}">${text}</div>`;
+      box.appendChild(row);
+      box.scrollTop = box.scrollHeight;
     }
 
     function sendQuickPrompt(type) {
       const prompts = {
         'sos': '🚨 SOS: Vontade incontrolável de rolar o feed agora!',
         'ansiedade': '⚡ Como conter a abstinência e inquietação ao ficar longe do celular?',
-        'sono': '😴 Dormi mal, como conseguir estudar hoje?',
-        'pomodoro': '⏱️ Como fazer meu primeiro bloco de 25 min com sucesso?'
+        'sono': '😴 Dormi mal, como conseguir estudar hoje com foco?'
       };
-      if (prompts[type]) {
-        executeChat(prompts[type]);
-      }
+      if (prompts[type]) executeChat(prompts[type]);
     }
 
     function handleChatSend() {
-      const input = document.getElementById('chat-input-text');
-      const val = input.value.trim();
-      if (!val) return;
-      input.value = '';
-      executeChat(val);
+      const inp = document.getElementById('chat-input-text');
+      const txt = inp.value.trim();
+      if (!txt) return;
+      inp.value = '';
+      executeChat(txt);
     }
 
-    async function executeChat(userMessage) {
-      appendChat('user', userMessage);
+    async function executeChat(msg) {
+      appendChatMessage('user', msg);
 
-      // Contexto atual do modelo de Machine Learning
       const context = {
         horas_redes_sociais: parseFloat(document.getElementById('input-horas').value),
         busca_dopamina_scroll: parseInt(document.getElementById('input-dopamina').value),
@@ -1191,300 +1996,28 @@ HTML_PAGE = """<!DOCTYPE html>
         status: currentProb < 35 ? 'FOCO_PRESERVADO' : (currentProb < 60 ? 'RISCO_MODERADO' : 'ALTO_RISCO')
       };
 
-      appendChat('bot', '<span style="opacity:0.6;">Digitando resposta... 🧠</span>');
-      const log = document.getElementById('chat-log');
-      const loadingMsg = log.lastElementChild;
+      appendChatMessage('bot', '<span style="opacity:0.6;">Digitando resposta... 🧠</span>');
+      const box = document.getElementById('chat-messages');
+      const loading = box.lastElementChild;
 
       try {
-        const response = await fetch('/api/chat', {
+        const res = await fetch('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            message: userMessage,
-            context: context,
-            api_key: geminiApiKey
-          })
+          body: JSON.stringify({ message: msg, context: context, api_key: geminiApiKey })
         });
-
-        const resData = await response.json();
-        loadingMsg.remove();
-        appendChat('bot', resData.reply || 'Não foi possível processar a resposta.');
-      } catch (err) {
-        loadingMsg.remove();
-        // Fallback local caso o servidor não responda
-        appendChat('bot', '<strong>Dica do Coach:</strong> Para vencer o impulso imediato de procrastinação, comprometa-se a fazer <strong>apenas 5 minutos</strong> de foco na aba <em>Timer Zen</em>. O atrito está no começo!');
+        const data = await res.json();
+        loading.remove();
+        appendChatMessage('bot', data.reply || 'Sem resposta do coach.');
+      } catch(err) {
+        loading.remove();
+        appendChatMessage('bot', '<strong>Dica Rápida:</strong> Para romper o atrito, vá à aba <strong>Pomodoro</strong> e faça apenas 5 minutos de foco ininterrupto.');
       }
     }
 
-    // Timer
-    let totalSec = 25 * 60;
-    let timerInt = null;
-
-    function formatTime(s) {
-      const m = Math.floor(s / 60).toString().padStart(2, '0');
-      const sec = (s % 60).toString().padStart(2, '0');
-      return m + ':' + sec;
-    }
-
-    function toggleTimer() {
-      const btn = document.getElementById('btn-timer-toggle');
-      if (timerInt) {
-        clearInterval(timerInt);
-        timerInt = null;
-        btn.textContent = 'Continuar Bloco';
-      } else {
-        btn.textContent = 'Pausar';
-        timerInt = setInterval(() => {
-          if (totalSec > 0) {
-            totalSec--;
-            document.getElementById('timer-clock').textContent = formatTime(totalSec);
-          } else {
-            clearInterval(timerInt);
-            timerInt = null;
-            btn.textContent = 'Concluído';
-            alert('🎉 Bloco de foco concluído sem distrações!');
-          }
-        }, 1000);
-      }
-    }
-
-    function setTimer(m) {
-      if (timerInt) { clearInterval(timerInt); timerInt = null; }
-      totalSec = m * 60;
-      document.getElementById('timer-clock').textContent = formatTime(totalSec);
-      document.getElementById('btn-timer-toggle').textContent = 'Iniciar Bloco';
-    }
-
-    // Áudio Sintetizado
-    let audioCtx = null;
-    let noiseNode = null;
-    let isNoiseOn = false;
-
-    function toggleSound() {
-      const icon = document.getElementById('sound-icon');
-      const txt = document.getElementById('sound-txt');
-      if (!isNoiseOn) {
-        audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
-        const buf = audioCtx.createBuffer(1, audioCtx.sampleRate * 2, audioCtx.sampleRate);
-        const out = buf.getChannelData(0);
-        let last = 0;
-        for (let i = 0; i < out.length; i++) {
-          const w = Math.random() * 2 - 1;
-          out[i] = (last + (0.02 * w)) / 1.02;
-          last = out[i];
-          out[i] *= 3.5;
-        }
-        noiseNode = audioCtx.createBufferSource();
-        noiseNode.buffer = buf;
-        noiseNode.loop = true;
-        const gain = audioCtx.createGain();
-        gain.gain.value = 0.08;
-        noiseNode.connect(gain);
-        gain.connect(audioCtx.destination);
-        noiseNode.start();
-        isNoiseOn = true;
-        icon.textContent = '🔊';
-        txt.textContent = 'Chuva Zen: Ligada';
-      } else {
-        if (noiseNode) { noiseNode.stop(); noiseNode.disconnect(); noiseNode = null; }
-        isNoiseOn = false;
-        icon.textContent = '🔇';
-        txt.textContent = 'Som de Chuva / Ruído: Desligado';
-      }
-    }
-
+    // Inicialização geral
     recalcular();
-    updateKeyBadge();
-
-    // ===== SISTEMA DE ATIVIDADES (localStorage) =====
-    function getActivities() {
-      try { return JSON.parse(localStorage.getItem('focusActivities') || '[]'); }
-      catch { return []; }
-    }
-    function saveActivities(arr) { localStorage.setItem('focusActivities', JSON.stringify(arr)); }
-
-    // Set datas padrão = hoje
-    (function initDates() {
-      const today = new Date().toISOString().split('T')[0];
-      document.getElementById('study-date').value = today;
-      document.getElementById('train-date').value = today;
-    })();
-
-    function logActivity(type) {
-      const isStudy = type === 'study';
-      const dateEl = document.getElementById(isStudy ? 'study-date' : 'train-date');
-      const durEl = document.getElementById(isStudy ? 'study-duration' : 'train-duration');
-      const noteEl = isStudy ? document.getElementById('study-note') : document.getElementById('train-type');
-
-      const date = dateEl.value;
-      const dur = parseInt(durEl.value);
-      if (!date || !dur || dur < 1) { alert('Preencha a data e duração.'); return; }
-
-      const entry = {
-        type: type,
-        date: date,
-        duration: dur,
-        note: isStudy ? (noteEl.value.trim() || 'Sessão de estudo') : noteEl.value,
-        timestamp: Date.now()
-      };
-
-      const activities = getActivities();
-      activities.push(entry);
-      saveActivities(activities);
-
-      if (isStudy) { durEl.value = 25; noteEl.value = ''; }
-      else { durEl.value = 30; }
-
-      renderHistories();
-      // feedback visual
-      const btn = event.target;
-      const orig = btn.textContent;
-      btn.textContent = '✅ Salvo!';
-      setTimeout(() => { btn.textContent = orig; }, 1200);
-    }
-
-    function deleteActivity(ts) {
-      let acts = getActivities().filter(a => a.timestamp !== ts);
-      saveActivities(acts);
-      renderHistories();
-    }
-
-    function renderHistories() {
-      const acts = getActivities();
-      const studyList = document.getElementById('study-history');
-      const trainList = document.getElementById('train-history');
-
-      const studies = acts.filter(a => a.type === 'study').sort((a,b) => b.timestamp - a.timestamp).slice(0, 15);
-      const trains = acts.filter(a => a.type === 'train').sort((a,b) => b.timestamp - a.timestamp).slice(0, 15);
-
-      studyList.innerHTML = studies.length === 0
-        ? '<div style="color:var(--muted);font-size:0.75rem;text-align:center;padding:16px;">Nenhuma sessão registrada ainda. Registre sua primeira sessão de estudo! 📚</div>'
-        : studies.map(s => `<div class="history-item">
-            <span class="hi-date">${formatDate(s.date)}</span>
-            <span class="hi-val">${s.duration} min</span>
-            <span class="hi-note">${s.note}</span>
-            <button onclick="deleteActivity(${s.timestamp})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.7rem;" title="Remover">✕</button>
-          </div>`).join('');
-
-      trainList.innerHTML = trains.length === 0
-        ? '<div style="color:var(--muted);font-size:0.75rem;text-align:center;padding:16px;">Nenhum treino registrado. Registre sua primeira atividade física! 🏋️</div>'
-        : trains.map(s => `<div class="history-item">
-            <span class="hi-date">${formatDate(s.date)}</span>
-            <span class="hi-val">${s.duration} min</span>
-            <span class="hi-note">${s.note}</span>
-            <button onclick="deleteActivity(${s.timestamp})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.7rem;" title="Remover">✕</button>
-          </div>`).join('');
-    }
-
-    function formatDate(d) {
-      const [y, m, day] = d.split('-');
-      return `${day}/${m}`;
-    }
-
-    // ===== RELATÓRIO E STREAKS =====
-    function renderReport() {
-      const acts = getActivities();
-      const studies = acts.filter(a => a.type === 'study');
-      const trains = acts.filter(a => a.type === 'train');
-
-      // Totais
-      const totalStudyMin = studies.reduce((s, a) => s + a.duration, 0);
-      const totalTrainMin = trains.reduce((s, a) => s + a.duration, 0);
-      const uniqueStudyDays = new Set(studies.map(a => a.date)).size;
-      const uniqueTrainDays = new Set(trains.map(a => a.date)).size;
-
-      document.getElementById('rpt-study-hours').textContent = (totalStudyMin / 60).toFixed(1) + 'h';
-      document.getElementById('rpt-train-days').textContent = uniqueTrainDays;
-      document.getElementById('rpt-study-sessions').textContent = studies.length;
-      document.getElementById('rpt-train-hours').textContent = (totalTrainMin / 60).toFixed(1) + 'h';
-
-      // Streaks
-      const studyStreak = calcStreak(studies);
-      const trainStreak = calcStreak(trains);
-
-      document.getElementById('rpt-study-streak').textContent = studyStreak.current;
-      document.getElementById('rpt-train-streak').textContent = trainStreak.current;
-      document.getElementById('rpt-study-fire').textContent = studyStreak.current >= 3 ? '🔥' : '';
-      document.getElementById('rpt-train-fire').textContent = trainStreak.current >= 3 ? '🔥' : '';
-
-      // Streak dots (últimos 14 dias)
-      renderStreakDots('study-streak-dots', studies);
-      renderStreakDots('train-streak-dots', trains);
-
-      // Gráfico semanal
-      renderWeeklyChart(acts);
-    }
-
-    function calcStreak(entries) {
-      const dates = [...new Set(entries.map(e => e.date))].sort().reverse();
-      if (dates.length === 0) return { current: 0, max: 0 };
-
-      const today = new Date().toISOString().split('T')[0];
-      const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
-
-      // O streak só conta se o último dia registrado for hoje ou ontem
-      if (dates[0] !== today && dates[0] !== yesterday) return { current: 0, max: 0 };
-
-      let streak = 1;
-      for (let i = 1; i < dates.length; i++) {
-        const d1 = new Date(dates[i-1] + 'T12:00:00');
-        const d2 = new Date(dates[i] + 'T12:00:00');
-        const diff = (d1 - d2) / 86400000;
-        if (diff === 1) streak++;
-        else break;
-      }
-      return { current: streak, max: streak };
-    }
-
-    function renderStreakDots(containerId, entries) {
-      const container = document.getElementById(containerId);
-      const dates = new Set(entries.map(e => e.date));
-      const today = new Date();
-      let html = '';
-      for (let i = 13; i >= 0; i--) {
-        const d = new Date(today);
-        d.setDate(d.getDate() - i);
-        const ds = d.toISOString().split('T')[0];
-        const isActive = dates.has(ds);
-        const isToday = i === 0;
-        html += `<div class="streak-dot${isActive ? ' active' : ''}${isToday ? ' today' : ''}" title="${formatDate(ds)}"></div>`;
-      }
-      container.innerHTML = html;
-    }
-
-    function renderWeeklyChart(acts) {
-      const chart = document.getElementById('weekly-chart');
-      const today = new Date();
-      const days = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
-      let maxMin = 1;
-      const data = [];
-
-      for (let i = 6; i >= 0; i--) {
-        const d = new Date(today);
-        d.setDate(d.getDate() - i);
-        const ds = d.toISOString().split('T')[0];
-        const dayStudy = acts.filter(a => a.type === 'study' && a.date === ds).reduce((s,a) => s + a.duration, 0);
-        const dayTrain = acts.filter(a => a.type === 'train' && a.date === ds).reduce((s,a) => s + a.duration, 0);
-        const total = dayStudy + dayTrain;
-        if (total > maxMin) maxMin = total;
-        data.push({ label: days[d.getDay()], study: dayStudy, train: dayTrain, isToday: i === 0 });
-      }
-
-      chart.innerHTML = data.map(d => {
-        const sH = Math.round((d.study / maxMin) * 90);
-        const tH = Math.round((d.train / maxMin) * 90);
-        const totalMin = d.study + d.train;
-        return `<div class="bar-day">
-          <div class="bar-val">${totalMin > 0 ? totalMin + 'm' : ''}</div>
-          <div class="bar-stack">
-            <div class="bar-seg study" style="height:${sH}px;"></div>
-            <div class="bar-seg train" style="height:${tH}px;"></div>
-          </div>
-          <div class="bar-label" style="${d.isToday ? 'color:var(--accent);font-weight:700;' : ''}">${d.label}</div>
-        </div>`;
-      }).join('');
-    }
-
+    initPomoDisplay();
   </script>
 </body>
 </html>
