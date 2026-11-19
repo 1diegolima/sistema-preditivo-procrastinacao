@@ -107,19 +107,21 @@ HTML_PAGE = """<!DOCTYPE html>
     }
     .nav-tabs {
       display: flex;
-      gap: 6px;
+      gap: 4px;
       background: rgba(0, 0, 0, 0.3);
       padding: 4px;
       border-radius: 12px;
       border: 1px solid var(--surface-border);
+      flex-wrap: wrap;
+      justify-content: center;
     }
     .nav-btn {
       background: transparent;
       border: none;
       color: var(--muted);
-      font-size: 0.75rem;
+      font-size: 0.68rem;
       font-weight: 600;
-      padding: 6px 14px;
+      padding: 5px 10px;
       border-radius: 8px;
       cursor: pointer;
       transition: all 0.2s ease;
@@ -484,6 +486,254 @@ HTML_PAGE = """<!DOCTYPE html>
     }
     .plan-item input { accent-color: var(--accent); width: 16px; height: 16px; }
     .hidden { display: none !important; }
+
+    /* ===== ABA ATIVIDADES ===== */
+    .activity-section {
+      background: rgba(9, 13, 22, 0.7);
+      border: 1px solid var(--surface-border);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .activity-section h3 {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .activity-form {
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+    .activity-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1;
+      min-width: 100px;
+    }
+    .activity-field label {
+      font-size: 0.7rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+    .activity-field input, .activity-field select {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--surface-border);
+      border-radius: 8px;
+      padding: 8px 10px;
+      color: var(--text);
+      font-size: 0.8rem;
+      outline: none;
+    }
+    .activity-field input:focus, .activity-field select:focus {
+      border-color: var(--accent);
+    }
+    .btn-log {
+      background: var(--accent);
+      color: #000;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 18px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      white-space: nowrap;
+      height: 36px;
+    }
+    .btn-log:hover { opacity: 0.85; }
+    .btn-log-danger {
+      background: rgba(244, 63, 94, 0.15);
+      color: var(--danger);
+      border: 1px solid rgba(244, 63, 94, 0.3);
+      font-weight: 600;
+      border-radius: 8px;
+      padding: 6px 12px;
+      cursor: pointer;
+      font-size: 0.7rem;
+    }
+    .history-list {
+      max-height: 180px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .history-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--surface-border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 0.78rem;
+    }
+    .history-item .hi-date { color: var(--muted); font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; }
+    .history-item .hi-val { font-weight: 600; color: var(--accent); }
+    .history-item .hi-note { color: var(--muted); font-size: 0.72rem; flex: 1; margin-left: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    /* ===== ABA RELATÓRIO ===== */
+    .report-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .report-card {
+      background: rgba(9, 13, 22, 0.7);
+      border: 1px solid var(--surface-border);
+      border-radius: 16px;
+      padding: 18px;
+      text-align: center;
+    }
+    .report-card .rc-icon { font-size: 1.5rem; margin-bottom: 6px; }
+    .report-card .rc-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: -0.04em;
+    }
+    .report-card .rc-label {
+      font-size: 0.7rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 4px;
+    }
+    .streak-box {
+      background: rgba(9, 13, 22, 0.7);
+      border: 1px solid var(--surface-border);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .streak-box h3 {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .streak-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .streak-row:last-child { border-bottom: none; }
+    .streak-emoji { font-size: 1.3rem; }
+    .streak-info { flex: 1; }
+    .streak-info .si-label { font-size: 0.78rem; font-weight: 500; }
+    .streak-info .si-sub { font-size: 0.68rem; color: var(--muted); }
+    .streak-count {
+      font-size: 1.5rem;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--accent);
+    }
+    .streak-fire { color: #f59e0b; }
+    .streak-dots {
+      display: flex;
+      gap: 4px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+    .streak-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      background: var(--surface-border);
+    }
+    .streak-dot.active { background: var(--success); }
+    .streak-dot.today { box-shadow: 0 0 6px var(--accent); border: 1px solid var(--accent); }
+    .report-weekly {
+      background: rgba(9, 13, 22, 0.7);
+      border: 1px solid var(--surface-border);
+      border-radius: 16px;
+      padding: 20px;
+    }
+    .report-weekly h3 {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .bar-chart {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      height: 120px;
+      padding-top: 10px;
+    }
+    .bar-day {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      height: 100%;
+      justify-content: flex-end;
+    }
+    .bar-stack {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      align-items: center;
+    }
+    .bar-seg {
+      width: 70%;
+      border-radius: 3px;
+      min-height: 0px;
+      transition: height 0.3s ease;
+    }
+    .bar-seg.study { background: var(--accent); }
+    .bar-seg.train { background: var(--success); }
+    .bar-label {
+      font-size: 0.65rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+    .bar-val {
+      font-size: 0.6rem;
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .legend-row {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      margin-top: 12px;
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+    .legend-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      margin-right: 4px;
+      vertical-align: middle;
+    }
   </style>
 </head>
 <body>
@@ -495,8 +745,10 @@ HTML_PAGE = """<!DOCTYPE html>
       </div>
       <div class="nav-tabs">
         <button id="nav-diag" class="nav-btn active" onclick="showTab('diag')">Diagnóstico</button>
-        <button id="nav-chat" class="nav-btn" onclick="showTab('chat')">💬 Coach Zen</button>
-        <button id="nav-timer" class="nav-btn" onclick="showTab('timer')">Timer Zen</button>
+        <button id="nav-chat" class="nav-btn" onclick="showTab('chat')">💬 Coach</button>
+        <button id="nav-timer" class="nav-btn" onclick="showTab('timer')">⏱ Timer</button>
+        <button id="nav-ativ" class="nav-btn" onclick="showTab('ativ')">🏋️ Atividades</button>
+        <button id="nav-report" class="nav-btn" onclick="showTab('report')">📊 Relatório</button>
         <button id="nav-plan" class="nav-btn" onclick="showTab('plan')">Plano</button>
       </div>
     </div>
@@ -637,6 +889,126 @@ HTML_PAGE = """<!DOCTYPE html>
       <h3 style="font-size: 0.85rem; text-transform: uppercase; color: var(--muted); letter-spacing: 0.05em;">Seu Checklist Anti-Procrastinação</h3>
       <div id="plan-items" class="plan-list"></div>
     </div>
+
+    <!-- TAB 5: ATIVIDADES (ESTUDO + TREINO) -->
+    <div id="tab-ativ" class="hidden">
+      <!-- Registrar Estudo -->
+      <div class="activity-section">
+        <h3>📚 Registrar Sessão de Estudo</h3>
+        <div class="activity-form">
+          <div class="activity-field">
+            <label>Data</label>
+            <input type="date" id="study-date">
+          </div>
+          <div class="activity-field">
+            <label>Duração (min)</label>
+            <input type="number" id="study-duration" min="1" max="720" value="25" placeholder="25">
+          </div>
+          <div class="activity-field" style="flex: 2;">
+            <label>O que estudou? (opcional)</label>
+            <input type="text" id="study-note" placeholder="Ex: Capítulo 3 de ML" maxlength="60">
+          </div>
+          <button class="btn-log" onclick="logActivity('study')">+ Registrar</button>
+        </div>
+        <div id="study-history" class="history-list"></div>
+      </div>
+
+      <!-- Registrar Treino -->
+      <div class="activity-section">
+        <h3>🏋️ Registrar Atividade Física</h3>
+        <div class="activity-form">
+          <div class="activity-field">
+            <label>Data</label>
+            <input type="date" id="train-date">
+          </div>
+          <div class="activity-field">
+            <label>Duração (min)</label>
+            <input type="number" id="train-duration" min="1" max="480" value="30" placeholder="30">
+          </div>
+          <div class="activity-field">
+            <label>Tipo</label>
+            <select id="train-type">
+              <option value="Musculação">Musculação</option>
+              <option value="Corrida">Corrida</option>
+              <option value="Caminhada">Caminhada</option>
+              <option value="Funcional">Funcional</option>
+              <option value="Esporte">Esporte</option>
+              <option value="Outro">Outro</option>
+            </select>
+          </div>
+          <button class="btn-log" onclick="logActivity('train')" style="background: var(--success);">+ Registrar</button>
+        </div>
+        <div id="train-history" class="history-list"></div>
+      </div>
+
+      <div style="text-align: center; margin-top: 8px;">
+        <button class="btn-log-danger" onclick="if(confirm('Apagar todo o histórico de atividades?')){localStorage.removeItem('focusActivities');renderHistories();renderReport();}">🗑️ Limpar Histórico</button>
+      </div>
+    </div>
+
+    <!-- TAB 6: RELATÓRIO -->
+    <div id="tab-report" class="hidden">
+      <!-- Cards de Resumo -->
+      <div class="report-grid">
+        <div class="report-card">
+          <div class="rc-icon">📚</div>
+          <div class="rc-value" id="rpt-study-hours">0h</div>
+          <div class="rc-label">Horas de Estudo</div>
+        </div>
+        <div class="report-card">
+          <div class="rc-icon">🏋️</div>
+          <div class="rc-value" id="rpt-train-days">0</div>
+          <div class="rc-label">Dias Treinados</div>
+        </div>
+        <div class="report-card">
+          <div class="rc-icon">📖</div>
+          <div class="rc-value" id="rpt-study-sessions">0</div>
+          <div class="rc-label">Sessões de Estudo</div>
+        </div>
+        <div class="report-card">
+          <div class="rc-icon">⏱️</div>
+          <div class="rc-value" id="rpt-train-hours">0h</div>
+          <div class="rc-label">Horas de Treino</div>
+        </div>
+      </div>
+
+      <!-- Streaks -->
+      <div class="streak-box">
+        <h3>🔥 Streaks (Sequência Consecutiva)</h3>
+        <div class="streak-row">
+          <div class="streak-emoji">📚</div>
+          <div class="streak-info">
+            <div class="si-label">Estudo</div>
+            <div class="si-sub">Dias consecutivos estudando</div>
+          </div>
+          <div class="streak-count" id="rpt-study-streak">0</div>
+          <div class="streak-fire" id="rpt-study-fire"></div>
+        </div>
+        <div id="study-streak-dots" class="streak-dots"></div>
+
+        <div class="streak-row" style="margin-top: 10px;">
+          <div class="streak-emoji">🏋️</div>
+          <div class="streak-info">
+            <div class="si-label">Treino</div>
+            <div class="si-sub">Dias consecutivos treinando</div>
+          </div>
+          <div class="streak-count" id="rpt-train-streak">0</div>
+          <div class="streak-fire" id="rpt-train-fire"></div>
+        </div>
+        <div id="train-streak-dots" class="streak-dots"></div>
+      </div>
+
+      <!-- Gráfico Semanal -->
+      <div class="report-weekly">
+        <h3>📊 Últimos 7 Dias</h3>
+        <div id="weekly-chart" class="bar-chart"></div>
+        <div class="legend-row">
+          <span><span class="legend-dot" style="background:var(--accent);"></span>Estudo</span>
+          <span><span class="legend-dot" style="background:var(--success);"></span>Treino</span>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <script>
@@ -720,11 +1092,13 @@ HTML_PAGE = """<!DOCTYPE html>
     }
 
     function showTab(tab) {
-      const tabs = ['diag', 'chat', 'timer', 'plan'];
+      const tabs = ['diag', 'chat', 'timer', 'plan', 'ativ', 'report'];
       tabs.forEach(t => {
         document.getElementById('tab-' + t).classList.toggle('hidden', t !== tab);
         document.getElementById('nav-' + t).classList.toggle('active', t === tab);
       });
+      if (tab === 'ativ') renderHistories();
+      if (tab === 'report') renderReport();
     }
 
     function updatePlan(h, d, a, s) {
@@ -921,6 +1295,196 @@ HTML_PAGE = """<!DOCTYPE html>
 
     recalcular();
     updateKeyBadge();
+
+    // ===== SISTEMA DE ATIVIDADES (localStorage) =====
+    function getActivities() {
+      try { return JSON.parse(localStorage.getItem('focusActivities') || '[]'); }
+      catch { return []; }
+    }
+    function saveActivities(arr) { localStorage.setItem('focusActivities', JSON.stringify(arr)); }
+
+    // Set datas padrão = hoje
+    (function initDates() {
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('study-date').value = today;
+      document.getElementById('train-date').value = today;
+    })();
+
+    function logActivity(type) {
+      const isStudy = type === 'study';
+      const dateEl = document.getElementById(isStudy ? 'study-date' : 'train-date');
+      const durEl = document.getElementById(isStudy ? 'study-duration' : 'train-duration');
+      const noteEl = isStudy ? document.getElementById('study-note') : document.getElementById('train-type');
+
+      const date = dateEl.value;
+      const dur = parseInt(durEl.value);
+      if (!date || !dur || dur < 1) { alert('Preencha a data e duração.'); return; }
+
+      const entry = {
+        type: type,
+        date: date,
+        duration: dur,
+        note: isStudy ? (noteEl.value.trim() || 'Sessão de estudo') : noteEl.value,
+        timestamp: Date.now()
+      };
+
+      const activities = getActivities();
+      activities.push(entry);
+      saveActivities(activities);
+
+      if (isStudy) { durEl.value = 25; noteEl.value = ''; }
+      else { durEl.value = 30; }
+
+      renderHistories();
+      // feedback visual
+      const btn = event.target;
+      const orig = btn.textContent;
+      btn.textContent = '✅ Salvo!';
+      setTimeout(() => { btn.textContent = orig; }, 1200);
+    }
+
+    function deleteActivity(ts) {
+      let acts = getActivities().filter(a => a.timestamp !== ts);
+      saveActivities(acts);
+      renderHistories();
+    }
+
+    function renderHistories() {
+      const acts = getActivities();
+      const studyList = document.getElementById('study-history');
+      const trainList = document.getElementById('train-history');
+
+      const studies = acts.filter(a => a.type === 'study').sort((a,b) => b.timestamp - a.timestamp).slice(0, 15);
+      const trains = acts.filter(a => a.type === 'train').sort((a,b) => b.timestamp - a.timestamp).slice(0, 15);
+
+      studyList.innerHTML = studies.length === 0
+        ? '<div style="color:var(--muted);font-size:0.75rem;text-align:center;padding:16px;">Nenhuma sessão registrada ainda. Registre sua primeira sessão de estudo! 📚</div>'
+        : studies.map(s => `<div class="history-item">
+            <span class="hi-date">${formatDate(s.date)}</span>
+            <span class="hi-val">${s.duration} min</span>
+            <span class="hi-note">${s.note}</span>
+            <button onclick="deleteActivity(${s.timestamp})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.7rem;" title="Remover">✕</button>
+          </div>`).join('');
+
+      trainList.innerHTML = trains.length === 0
+        ? '<div style="color:var(--muted);font-size:0.75rem;text-align:center;padding:16px;">Nenhum treino registrado. Registre sua primeira atividade física! 🏋️</div>'
+        : trains.map(s => `<div class="history-item">
+            <span class="hi-date">${formatDate(s.date)}</span>
+            <span class="hi-val">${s.duration} min</span>
+            <span class="hi-note">${s.note}</span>
+            <button onclick="deleteActivity(${s.timestamp})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.7rem;" title="Remover">✕</button>
+          </div>`).join('');
+    }
+
+    function formatDate(d) {
+      const [y, m, day] = d.split('-');
+      return `${day}/${m}`;
+    }
+
+    // ===== RELATÓRIO E STREAKS =====
+    function renderReport() {
+      const acts = getActivities();
+      const studies = acts.filter(a => a.type === 'study');
+      const trains = acts.filter(a => a.type === 'train');
+
+      // Totais
+      const totalStudyMin = studies.reduce((s, a) => s + a.duration, 0);
+      const totalTrainMin = trains.reduce((s, a) => s + a.duration, 0);
+      const uniqueStudyDays = new Set(studies.map(a => a.date)).size;
+      const uniqueTrainDays = new Set(trains.map(a => a.date)).size;
+
+      document.getElementById('rpt-study-hours').textContent = (totalStudyMin / 60).toFixed(1) + 'h';
+      document.getElementById('rpt-train-days').textContent = uniqueTrainDays;
+      document.getElementById('rpt-study-sessions').textContent = studies.length;
+      document.getElementById('rpt-train-hours').textContent = (totalTrainMin / 60).toFixed(1) + 'h';
+
+      // Streaks
+      const studyStreak = calcStreak(studies);
+      const trainStreak = calcStreak(trains);
+
+      document.getElementById('rpt-study-streak').textContent = studyStreak.current;
+      document.getElementById('rpt-train-streak').textContent = trainStreak.current;
+      document.getElementById('rpt-study-fire').textContent = studyStreak.current >= 3 ? '🔥' : '';
+      document.getElementById('rpt-train-fire').textContent = trainStreak.current >= 3 ? '🔥' : '';
+
+      // Streak dots (últimos 14 dias)
+      renderStreakDots('study-streak-dots', studies);
+      renderStreakDots('train-streak-dots', trains);
+
+      // Gráfico semanal
+      renderWeeklyChart(acts);
+    }
+
+    function calcStreak(entries) {
+      const dates = [...new Set(entries.map(e => e.date))].sort().reverse();
+      if (dates.length === 0) return { current: 0, max: 0 };
+
+      const today = new Date().toISOString().split('T')[0];
+      const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+
+      // O streak só conta se o último dia registrado for hoje ou ontem
+      if (dates[0] !== today && dates[0] !== yesterday) return { current: 0, max: 0 };
+
+      let streak = 1;
+      for (let i = 1; i < dates.length; i++) {
+        const d1 = new Date(dates[i-1] + 'T12:00:00');
+        const d2 = new Date(dates[i] + 'T12:00:00');
+        const diff = (d1 - d2) / 86400000;
+        if (diff === 1) streak++;
+        else break;
+      }
+      return { current: streak, max: streak };
+    }
+
+    function renderStreakDots(containerId, entries) {
+      const container = document.getElementById(containerId);
+      const dates = new Set(entries.map(e => e.date));
+      const today = new Date();
+      let html = '';
+      for (let i = 13; i >= 0; i--) {
+        const d = new Date(today);
+        d.setDate(d.getDate() - i);
+        const ds = d.toISOString().split('T')[0];
+        const isActive = dates.has(ds);
+        const isToday = i === 0;
+        html += `<div class="streak-dot${isActive ? ' active' : ''}${isToday ? ' today' : ''}" title="${formatDate(ds)}"></div>`;
+      }
+      container.innerHTML = html;
+    }
+
+    function renderWeeklyChart(acts) {
+      const chart = document.getElementById('weekly-chart');
+      const today = new Date();
+      const days = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+      let maxMin = 1;
+      const data = [];
+
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date(today);
+        d.setDate(d.getDate() - i);
+        const ds = d.toISOString().split('T')[0];
+        const dayStudy = acts.filter(a => a.type === 'study' && a.date === ds).reduce((s,a) => s + a.duration, 0);
+        const dayTrain = acts.filter(a => a.type === 'train' && a.date === ds).reduce((s,a) => s + a.duration, 0);
+        const total = dayStudy + dayTrain;
+        if (total > maxMin) maxMin = total;
+        data.push({ label: days[d.getDay()], study: dayStudy, train: dayTrain, isToday: i === 0 });
+      }
+
+      chart.innerHTML = data.map(d => {
+        const sH = Math.round((d.study / maxMin) * 90);
+        const tH = Math.round((d.train / maxMin) * 90);
+        const totalMin = d.study + d.train;
+        return `<div class="bar-day">
+          <div class="bar-val">${totalMin > 0 ? totalMin + 'm' : ''}</div>
+          <div class="bar-stack">
+            <div class="bar-seg study" style="height:${sH}px;"></div>
+            <div class="bar-seg train" style="height:${tH}px;"></div>
+          </div>
+          <div class="bar-label" style="${d.isToday ? 'color:var(--accent);font-weight:700;' : ''}">${d.label}</div>
+        </div>`;
+      }).join('');
+    }
+
   </script>
 </body>
 </html>
