@@ -1,46 +1,49 @@
 """
 Passo 4 - Programe o Mínimo
 Treinamento essencial de um modelo de Classificação (Regressão Logística)
-para prever risco de procrastinação com poucas linhas de código.
+utilizando a base de dados completa com divisão entre treino e teste.
 """
 
 import pandas as pd
+from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, classification_report
 import joblib
 
-# 1. Carregamento dos dados enxutos
-df = pd.read_csv('dados_estudo.csv')
+# 1. Carregamento dos dados
+df = pd.read_csv('dataset_estudantes_real.csv')
 
-# 2. Definição das variáveis de entrada (X) e saída (y)
-X = df[['horas_sono', 'minutos_rede_social', 'bloco_planejado_horas']]
+# 2. Definição das variáveis de entrada (X) e saída esperada (y)
+features = ['horas_sono', 'minutos_rede_social', 'horas_estudo_planejado', 'horas_atividade_fisica']
+X = df[features]
 y = df['procrastinou']
 
-# 3. Treinamento do Modelo Mínimo
-modelo = LogisticRegression()
-modelo.fit(X, y)
+# 3. Divisão em Treino (80%) e Teste (20%)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=42, stratify=y)
 
-# 4. Avaliação e verificação do funcionamento
-acuracia = modelo.score(X, y)
-print("=== Passo 4: Modelo Treinado com Sucesso ===")
-print(f"Acurácia nos dados de treino: {acuracia * 100:.1f}%")
-print(f"Pesos aprendidos (Coeficientes): {modelo.coef_[0]}")
-print(f"Intercepto: {modelo.intercept_[0]:.4f}")
+# 4. Treinamento do Modelo Mínimo
+modelo = LogisticRegression(random_state=42)
+modelo.fit(X_train, y_train)
 
-# 5. Teste rápido de inferência
-exemplo_teste = pd.DataFrame([{
-    'horas_sono': 7.0,
-    'minutos_rede_social': 20,
-    'bloco_planejado_horas': 2.0
-}])
+# 5. Avaliação do Modelo no conjunto de teste
+y_pred = modelo.predict(X_test)
+acuracia = accuracy_score(y_test, y_pred)
 
-probabilidade = modelo.predict_proba(exemplo_teste)[0][1]
-previsao = modelo.predict(exemplo_teste)[0]
+print("=" * 60)
+print("     PASSO 4: MODELO TREINADO E AVALIADO COM SUCESSO")
+print("=" * 60)
+print(f"Total de registros na base: {len(df)}")
+print(f"Amostras de treino: {len(X_train)} | Amostras de teste: {len(X_test)}")
+print(f"\nAcurácia no conjunto de teste: {acuracia * 100:.2f}%\n")
+print("Relatório de Classificação:")
+print(classification_report(y_test, y_pred, target_names=['Focado (0)', 'Procrastinou (1)']))
 
-print("\n--- Teste de Inferência Rápido ---")
-print(f"Entrada de teste: 7h sono | 20m rede social | bloco de 2h")
-print(f"Probabilidade de procrastinar: {probabilidade * 100:.2f}%")
-print(f"Classificação final: {'Procrastina' if previsao == 1 else 'Foco Mantido'}")
+print("Pesos aprendidos por variável (Coeficientes):")
+for feat, coef in zip(features, modelo.coef_[0]):
+    print(f"  - {feat}: {coef:+.4f}")
+print(f"  - Intercepto: {modelo.intercept_[0]:+.4f}")
 
-# Salvar o modelo treinado para uso posterior no assistente
+# 6. Salvamento do modelo treinado
 joblib.dump(modelo, 'modelo_procrastinacao.joblib')
-print("\nModelo exportado para 'modelo_procrastinacao.joblib'.")
+print("\nModelo exportado com sucesso para 'modelo_procrastinacao.joblib'.")
+print("=" * 60)
