@@ -2,4 +2,4 @@
 *.pyc
 .venv/
 env/
-*.png
+.vscode/
