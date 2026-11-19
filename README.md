@@ -189,11 +189,13 @@ Para rodar a aplicação:
 python app.py
 ```
 
-Acesse `http://localhost:5000` para usufruir de 4 módulos integrados:
-1. **Diagnóstico em Tempo Real:** Medidor de risco animado conforme os sliders comportamentais são ajustados.
-2. **Chatbot Coach Zen (Gemini / Offline):** Assistente conversacional conectado ao risco da IA que fornece comandos anti-procrastinação imediatos (ex: protocolo de 90 segundos, técnica de fricção visual em escala de cinza e estratégias de quebra de inércia).
-3. **Timer Zen Pomodoro:** Blocos de estudo com som de chuva relaxante gerado nativamente via *Web Audio API* e rastreador de sessões concluídas.
-4. **Plano de Ação Personalizado:** Checklist dinâmico com tarefas de higiene digital adaptadas ao nível de risco atual.
+Acesse `http://localhost:5000` para usufruir de 6 módulos integrados:
+1. **🎯 Diagnóstico em Tempo Real:** Medidor de risco animado conforme os sliders comportamentais da Regressão Logística são ajustados.
+2. **⏱️ Pomodoro Configurável:** Ciclos de foco, pausa curta e pausa longa personalizáveis (estilo Pomofocus), com contabilização automática de horas de estudo no relatório e som de chuva zen (*Web Audio API*).
+3. **💬 Chatbot Coach Zen (Gemini / Offline):** Assistente conversacional conectado ao risco da IA que fornece comandos práticos de neurociência imediatos (protocolo de 90s, escala de cinza, regra dos 5 minutos).
+4. **🏋️ Atividades Físicas & Hábitos:** Registro de treinos (musculação, corrida, caminhada) e sincronização com sessões de foco.
+5. **📊 Relatório Analytics & Streaks:** Métricas acumuladas de horas de estudo e treino, histórico dos últimos 14 dias em tiles (estilo GitHub), streaks de consistência diária e gráfico de barras semanal comparativo.
+6. **📋 Plano de Ação Personalizado:** Checklist dinâmico com tarefas de higiene digital adaptadas ao nível de risco atual.
 
 *(Opcional: Crie um arquivo `.env` com `GEMINI_API_KEY=sua_chave` ou configure diretamente pelo botão na interface).*
 
