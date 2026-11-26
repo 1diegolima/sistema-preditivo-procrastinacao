@@ -7,13 +7,13 @@ from http.server import BaseHTTPRequestHandler
 
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
 
-# Coeficientes da Regressão Logística
-B0 = -4.889100598331315;
-B_HORAS = 0.14603957;
-B_DOPAMINA = 0.35412845;
-B_ANSIEDADE = 0.51240182;
-B_SONO = 0.16213791;
-B_CONCENTRACAO = 0.37560214;
+# Coeficientes da Regressao Logistica
+B0 = -4.889100598331315
+B_HORAS = 0.14603957
+B_DOPAMINA = 0.35412845
+B_ANSIEDADE = 0.51240182
+B_SONO = 0.16213791
+B_CONCENTRACAO = 0.37560214
 
 def sigmoid(z):
     try:
@@ -2635,7 +2635,7 @@ HTML_PAGE = """<!DOCTYPE html>
 
 class handler(BaseHTTPRequestHandler):
     def log_message(self, format, *args):
-        pass  # Silencia logs para Vercel
+        pass
 
     def do_GET(self):
         self.send_response(200)
@@ -2649,148 +2649,76 @@ class handler(BaseHTTPRequestHandler):
             post_data = self.rfile.read(content_length)
             try:
                 data = json.loads(post_data.decode('utf-8'))
-                df_input = pd.DataFrame([{
-                    'horas_redes_sociais': float(data.get('horas_redes_sociais', 2.0)),
-                    'busca_dopamina_scroll': int(data.get('busca_dopamina_scroll', 2)),
-                    'ansiedade_sem_celular': int(data.get('ansiedade_sem_celular', 2)),
-                    'problemas_sono': int(data.get('problemas_sono', 2)),
-                    'dificuldade_concentracao': int(data.get('dificuldade_concentracao', 2))
-                }])
-                
-                if modelo:
-                    prob = float(modelo.predict_proba(df_input)[0][1] * 100)
-                    classe = int(modelo.predict(df_input)[0])
-                else:
-                    prob = 50.0
-                    classe = 0
-
-                resposta = {
-                    'probabilidade': round(prob, 1),
-                    'classe': classe,
-                    'status': 'ALTO_RISCO' if classe == 1 else 'FOCO_PRESERVADO'
-                }
-                
+                h = float(data.get('horas_redes_sociais', 2.0))
+                d = int(data.get('busca_dopamina_scroll', 2))
+                a = int(data.get('ansiedade_sem_celular', 2))
+                s = int(data.get('problemas_sono', 2))
+                c = int(data.get('dificuldade_concentracao', 2))
+                z = B0 + (B_HORAS*h) + (B_DOPAMINA*d) + (B_ANSIEDADE*a) + (B_SONO*s) + (B_CONCENTRACAO*c)
+                prob = round(sigmoid(z) * 100, 1)
+                classe = 1 if prob >= 50 else 0
                 self.send_response(200)
-                self.send_header("Content-type", "application/json")
+                self.send_header('Content-type', 'application/json')
                 self.end_headers()
-                self.wfile.write(json.dumps(resposta).encode('utf-8'))
+                self.wfile.write(json.dumps({'probabilidade': prob, 'classe': classe}).encode('utf-8'))
             except Exception as e:
-                self.send_response(400)
+                self.send_response(500)
+                self.send_header('Content-type', 'application/json')
                 self.end_headers()
-                self.wfile.write(json.dumps({'erro': str(e)}).encode('utf-8'))
+                self.wfile.write(json.dumps({'error': str(e)}).encode('utf-8'))
 
         elif self.path == '/api/chat':
             content_length = int(self.headers.get('Content-Length', 0))
             post_data = self.rfile.read(content_length)
             try:
                 data = json.loads(post_data.decode('utf-8'))
-                user_msg = data.get('message', '').strip()
-                ctx = data.get('context', {})
-                api_key = data.get('api_key', '').strip() or GEMINI_KEY_DEFAULT
-
-                reply = ""
-                source = "offline"
-
-                # 1. Tentativa de chamada à Google Gemini API caso haja chave
-                if api_key:
-                    try:
-                        system_prompt = f"""Você é o Coach Zen de Neurociência e Foco do 'Sistema Preditivo de Foco'.
-O usuário passou pelo modelo preditivo de Machine Learning com as seguintes métricas atuais:
-- Risco de Procrastinação: {ctx.get('probabilidade', 50)}% ({ctx.get('status', 'MODERADO')})
-- Tempo em Telas: {ctx.get('horas_redes_sociais', 2.0)} horas/dia
-- Inquietação sem Celular (Abstinência): {ctx.get('ansiedade_sem_celular', 2)}/5 (Fator de maior peso no modelo: +0.51)
-- Scroll sem Propósito (Dopamina): {ctx.get('busca_dopamina_scroll', 2)}/5
-- Problemas de Sono: {ctx.get('problemas_sono', 2)}/5
-- Dificuldade prévia de foco: {ctx.get('dificuldade_concentracao', 2)}/5
-
-🚨 DIRETRIZ SUPREMA E CHOQUE DE REALIDADE (INVIOLÁVEL):
-Sua ÚNICA E EXCLUSIVA função neste sistema é manter o usuário FOCADO em suas tarefas e combater a procrastinação.
-1. SE O USUÁRIO PERGUNTAR QUALQUER COISA FORA DO ESCOPO DE FOCO/ESTUDO/PRODUTIVIDADE:
-   (Exemplos: receitas de bolo/culinária, piadas, amenidades, fofocas, entretenimento, curiosidades aleatórias ou papo furado que claramente é uma fuga de atenção):
-   ⛔ NÃO RESPONDA À PERGUNTA! NÃO DÊ DICAS DO ASSUNTO ALHEIO!
-   Corte imediatamente e aplique um CHOQUE DE REALIDADE firme, direto e cirúrgico no usuário, apontando que ele está usando o chat como uma forma disfarçada de procrastinar e fugir da tarefa real.
-   Exemplo de resposta obrigatória:
-   "🛑 **Pare agora.** Você abriu este app para combater a procrastinação, mas está me perguntando sobre coisas aleatórias. Isso é o seu cérebro criando uma distração elaborada para fugir do trabalho real que você precisa fazer. Feche este chat agora mesmo, vá para a aba **Pomodoro** e inicie seu bloco de estudo imediatamente."
-2. SE A PERGUNTA FOR LEGÍTIMA SOBRE FOCO, MATÉRIA DE ESTUDO, HÁBITOS OU COMO VENCER A INÉRCIA:
-   - Responda em português brasileiro de forma acolhedora, porém extremamente direta e concisa (máximo 2 a 3 frases curtas).
-   - Foque 100% na ação física imediata (regra dos 5 min, protocolo dos 90s, fricção visual, celular em outro cômodo).
-   - O objetivo é fazer o usuário fechar o chat e ir agir imediatamente."""
-                        gemini_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent?key={api_key}"
-                        gemini_payload = {
-                            "system_instruction": {"parts": [{"text": system_prompt}]},
-                            "contents": [{"role": "user", "parts": [{"text": user_msg}]}],
-                            "generationConfig": {"temperature": 0.5, "maxOutputTokens": 250}
-                        }
-
-                        req = urllib.request.Request(
-                            gemini_url,
-                            data=json.dumps(gemini_payload).encode('utf-8'),
-                            headers={'Content-Type': 'application/json'}
-                        )
-                        with urllib.request.urlopen(req, timeout=15) as res:
-                            res_json = json.loads(res.read().decode('utf-8'))
-                            raw_text = res_json['candidates'][0]['content']['parts'][0]['text']
-                            # Converte quebras de linha em tags HTML simples
-                            # Converte markdown padrão para tags HTML limpas
-                            import re
-                            formatted = raw_text
-                            formatted = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', formatted)
-                            formatted = re.sub(r'\*(.*?)\*', r'<em>\1</em>', formatted)
-                            reply = formatted.replace('\n', '<br>')
-                            source = "gemini-flash-lite-latest"
-                    except Exception as gemini_err:
-                        print(f"[!] Erro ao chamar Gemini API: {gemini_err}. Usando fallback offline.")
-                        reply = ""
-
-                # 2. Fallback Inteligente Offline (se sem chave ou se falhar)
-                if not reply:
-                    lower = user_msg.lower()
-                    prob = ctx.get('probabilidade', 50)
-                    
-                    # Verificação de fuga/distração alheia
-                    distracoes = ['bolo', 'receita', 'futebol', 'jogo', 'piada', 'fofoca', 'filme', 'série', 'musica', 'música', 'clima', 'tempo']
-                    if any(w in lower for w in distracoes):
-                        reply = "🛑 <strong>Pare agora.</strong> Você abriu este app para combater a procrastinação, mas está usando o chat para se distrair. Isso é o seu cérebro sabotando o seu foco.<br><br>👉 Feche esta janela agora, abra a aba <strong>Pomodoro</strong> e inicie seu bloco de foco imediatamente."
-                    elif 'feed' in lower or 'sos' in lower or 'celular' in lower or 'tiktok' in lower or 'instagram' in lower:
-                        reply = "🛑 <strong>PARE por 90 segundos!</strong><br><br>A neurociência comprova que a onda de urgência de dopamina decai se você não alimentar o estímulo nos primeiros 90 segundos.<br>1. Não encoste no aparelho.<br>2. Faça 2 respirações lentas pelo nariz.<br>3. Combine consigo mesmo: <em>'Vou fazer só 5 minutos da tarefa'</em>. O atrito está apenas no início!"
-                    elif 'sono' in lower or 'dormir' in lower or 'cansaço' in lower:
-                        reply = f"Com sono ruim, seu córtex pré-frontal tem menos energia inibitória (seu risco calculado é de {prob}%).<br><br>👉 <strong>Estratégia Imediata:</strong> Não tente blocos de 2 horas. Use <strong>Micro-Pomodoros de 15 minutos</strong> na aba Pomodoro. Conclua apenas 1 prioridade essencial hoje."
-                    elif 'ansiedade' in lower or 'abstinência' in lower:
-                        reply = "O modelo de IA apontou que <strong>a inquietação sem celular tem o maior peso (+0.51)</strong> na sua propensão a dispersar.<br><br>👉 <strong>Tática Imediata:</strong> Coloque a tela do celular em <em>Escala de Cinza</em> nas configurações e guarde-o fora da mesa. Sem cores vibrantes, o cérebro encerra a busca compulsiva por estímulos."
-                    else:
-                        reply = f"Seu risco preditivo atual é de <strong>{prob}%</strong>.<br><br>Minha recomendação direta: vá para a aba <strong>Pomodoro</strong>, defina 1 única micro-meta e execute 1 bloco de foco com a Chuva Zen ligada. A dopamina virá da sensação de progresso real."
-                    source = "offline-zen" 
-
+                message = data.get('message', '')
+                context = data.get('context', {})
+                api_key = data.get('api_key', '') or GEMINI_API_KEY
+                if not api_key:
+                    raise ValueError('Chave de API nao configurada.')
+                prob = context.get('prob', 50)
+                horas = context.get('horas', 2)
+                dopamina = context.get('dopamina', 2)
+                ansiedade = context.get('ansiedade', 2)
+                sono = context.get('sono', 2)
+                concentracao = context.get('concentracao', 2)
+                system_prompt = (
+                    "Voce e o Coach Zen - especialista em neurociencia comportamental e combate a procrastinacao.\n"
+                    f"DIAGNOSTICO: Risco={prob}%, Horas redes={horas}h, Dopamina={dopamina}/5, "
+                    f"Ansiedade={ansiedade}/5, Sono={sono}/5, Concentracao={concentracao}/5\n"
+                    "MISSAO: Ajudar o usuario a FOCAR e AGIR AGORA. Nunca responda perguntas fora do escopo "
+                    "de foco, produtividade, procrastinacao, habitos, neurociencia e bem-estar mental.\n"
+                    "Se o usuario perguntar algo fora do escopo, corte com choque de realidade.\n"
+                    "REGRAS: Resposta CURTA (max 3 paragrafos), linguagem baseada em neurociencia real, "
+                    "UMA acao concreta imediata, NUNCA use **negrito** markdown - use <strong> HTML.\n"
+                    "Tom: firme, empatico, sem julgamento.\n\n"
+                    f"Usuario: {message}"
+                )
+                payload = json.dumps({
+                    "contents": [{"parts": [{"text": system_prompt}]}],
+                    "generationConfig": {"maxOutputTokens": 512, "temperature": 0.7}
+                }).encode('utf-8')
+                url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key={api_key}"
+                req = urllib.request.Request(url, data=payload, headers={'Content-Type': 'application/json'}, method='POST')
+                with urllib.request.urlopen(req, timeout=20) as resp:
+                    result = json.loads(resp.read().decode('utf-8'))
+                    reply = result['candidates'][0]['content']['parts'][0]['text']
                 self.send_response(200)
-                self.send_header("Content-type", "application/json; charset=utf-8")
+                self.send_header('Content-type', 'application/json')
                 self.end_headers()
-                self.wfile.write(json.dumps({'reply': reply, 'source': source}).encode('utf-8'))
+                self.wfile.write(json.dumps({'reply': reply}).encode('utf-8'))
+            except urllib.error.HTTPError as e:
+                err_body = e.read().decode('utf-8', errors='replace')
+                self.send_response(e.code)
+                self.send_header('Content-type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({'error': f'Gemini {e.code}: {err_body[:300]}'}).encode('utf-8'))
             except Exception as e:
-                self.send_response(400)
+                self.send_response(500)
+                self.send_header('Content-type', 'application/json')
                 self.end_headers()
-                self.wfile.write(json.dumps({'erro': str(e)}).encode('utf-8'))
+                self.wfile.write(json.dumps({'error': str(e)}).encode('utf-8'))
         else:
             self.send_response(404)
             self.end_headers()
-
-def iniciar_servidor():
-    socketserver.TCPServer.allow_reuse_address = True
-    with socketserver.TCPServer(("", PORT), FocusHandler) as httpd:
-        url = f"http://localhost:{PORT}"
-        print("=" * 65)
-        print(f"  🧠 SERVIDOR HÍBRIDO (ML + GEMINI API) INICIADO!")
-        print(f"  Acesse no seu navegador: {url}")
-        print("  Pressione Ctrl+C para encerrar o servidor.")
-        print("=" * 65)
-        try:
-            webbrowser.open(url)
-        except Exception:
-            pass
-        try:
-            httpd.serve_forever()
-        except KeyboardInterrupt:
-            print("\nServidor encerrado.")
-
-if __name__ == '__main__':
-    iniciar_servidor()
-
