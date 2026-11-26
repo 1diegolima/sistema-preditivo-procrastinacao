@@ -2450,13 +2450,16 @@ HTML_PAGE = """<!DOCTYPE html>
 
     function parseMarkdownToHtml(txt) {
       if (!txt) return '';
-      // Converte **negrito** para <strong>negrito</strong>
-      let html = txt.replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>');
-      // Converte *italico* para <em>italico</em>
-      html = html.replace(/\\*(.*?)\\*/g, '<em>$1</em>');
-      // Converte quebras de linha em <br> se ja nao tiverem
-      html = html.replace(/\n/g, '<br>');
-      return html;
+      var parts = txt.split('**');
+      var res = '';
+      for (var i = 0; i < parts.length; i++) {
+        if (i % 2 === 1) {
+          res += '<strong>' + parts[i] + '</strong>';
+        } else {
+          res += parts[i];
+        }
+      }
+      return res.split(String.fromCharCode(10)).join('<br>');
     }
 
     function appendChatMessage(role, text) {

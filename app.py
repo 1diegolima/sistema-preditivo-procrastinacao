@@ -2468,13 +2468,16 @@ HTML_PAGE = """<!DOCTYPE html>
 
     function parseMarkdownToHtml(txt) {
       if (!txt) return '';
-      // Converte **negrito** para <strong>negrito</strong>
-      let html = txt.replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>');
-      // Converte *italico* para <em>italico</em>
-      html = html.replace(/\\*(.*?)\\*/g, '<em>$1</em>');
-      // Converte quebras de linha em <br> se ja nao tiverem
-      html = html.replace(/\n/g, '<br>');
-      return html;
+      var parts = txt.split('**');
+      var res = '';
+      for (var i = 0; i < parts.length; i++) {
+        if (i % 2 === 1) {
+          res += '<strong>' + parts[i] + '</strong>';
+        } else {
+          res += parts[i];
+        }
+      }
+      return res.split(String.fromCharCode(10)).join('<br>');
     }
 
     function appendChatMessage(role, text) {
@@ -2662,6 +2665,9 @@ class FocusHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
         self.send_response(200)
         self.send_header("Content-type", "text/html; charset=utf-8")
+        self.send_header("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
+        self.send_header("Pragma", "no-cache")
+        self.send_header("Expires", "0")
         self.end_headers()
         self.wfile.write(HTML_PAGE.encode('utf-8'))
 
