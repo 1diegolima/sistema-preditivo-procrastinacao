@@ -195,7 +195,7 @@ Acesse `http://localhost:5000` para usufruir de 6 módulos integrados:
 3. **💬 Chatbot Coach Zen (Gemini / Offline):** Assistente conversacional conectado ao risco da IA que fornece comandos práticos de neurociência imediatos (protocolo de 90s, escala de cinza, regra dos 5 minutos).
 4. **🏋️ Atividades Físicas & Hábitos:** Registro de treinos (musculação, corrida, caminhada) e sincronização com sessões de foco.
 5. **📊 Relatório Analytics & Streaks:** Métricas acumuladas de horas de estudo e treino, histórico dos últimos 14 dias em tiles (estilo GitHub), streaks de consistência diária e gráfico de barras semanal comparativo.
-6. **📋 Plano de Ação Personalizado:** Checklist dinâmico com tarefas de higiene digital adaptadas ao nível de risco atual.
+6. **📋 Plano de Ação Escalonado por Risco:** Matriz dinâmica de contramedidas com 4 níveis de severidade (de 4 a 10 ações neurocientíficas práticas proporcionais à porcentagem de risco), categorizadas por tags (*Imediato*, *Celular*, *Neurociência*, *Pomodoro*, *Sono*), barra de progresso de aplicação e sincronização de 1 clique com o timer Pomodoro.
 
 *(Opcional: Crie um arquivo `.env` com `GEMINI_API_KEY=sua_chave` ou configure diretamente pelo botão na interface).*
 

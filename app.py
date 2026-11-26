@@ -941,27 +941,166 @@ HTML_PAGE = """<!DOCTYPE html>
     }
 
     /* ========================================================
-       TAB 6: PLANO DE AÇÃO
+       TAB 6: PLANO DE AÇÃO DINÂMICO & ESCALONADO
        ======================================================== */
+    .plan-header-card {
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .plan-severity-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-bottom: 8px;
+    }
+    .plan-desc {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+    .plan-action-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      margin-bottom: 14px;
+    }
+    .btn-apply-pomo {
+      background: var(--accent);
+      color: #040810;
+      font-weight: 700;
+      font-size: 0.78rem;
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .btn-apply-pomo:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+    .checklist-progress-box {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .checklist-progress-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      color: var(--text-tertiary);
+    }
+    .checklist-progress-track {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .checklist-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--success);
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
     .checklist-container {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 10px;
     }
     .check-item {
       display: flex;
-      align-items: center;
-      gap: 12px;
+      align-items: flex-start;
+      gap: 14px;
       background: rgba(0, 0, 0, 0.25);
       border: 1px solid var(--card-border);
-      padding: 12px 16px;
-      border-radius: var(--radius-sm);
-      font-size: 0.8rem;
+      padding: 14px 16px;
+      border-radius: var(--radius-md);
       cursor: pointer;
       transition: all 0.2s ease;
     }
-    .check-item:hover { border-color: rgba(255, 255, 255, 0.12); }
-    .check-item input { accent-color: var(--accent); width: 16px; height: 16px; }
+    .check-item:hover {
+      border-color: rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .check-item.checked {
+      opacity: 0.65;
+      background: rgba(16, 185, 129, 0.04);
+      border-color: rgba(16, 185, 129, 0.2);
+    }
+    .check-item input[type="checkbox"] {
+      accent-color: var(--success);
+      width: 18px;
+      height: 18px;
+      margin-top: 2px;
+      cursor: pointer;
+    }
+    .check-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .check-title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .check-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .check-tag {
+      font-size: 0.65rem;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .tag-immediate { background: rgba(244, 63, 94, 0.15); color: #fda4af; border: 1px solid rgba(244, 63, 94, 0.3); }
+    .tag-phone     { background: rgba(56, 189, 248, 0.15); color: #7dd3fc; border: 1px solid rgba(56, 189, 248, 0.3); }
+    .tag-neuro     { background: rgba(168, 85, 247, 0.15); color: #d8b4fe; border: 1px solid rgba(168, 85, 247, 0.3); }
+    .tag-pomo      { background: rgba(16, 185, 129, 0.15); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .tag-sleep     { background: rgba(245, 158, 11, 0.15); color: #fde68a; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .check-desc {
+      font-size: 0.76rem;
+      color: var(--text-secondary);
+      line-height: 1.45;
+    }
+    .intervention-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
 
     .hidden { display: none !important; }
   </style>
@@ -1009,7 +1148,16 @@ HTML_PAGE = """<!DOCTYPE html>
         <div class="dash-info">
           <span id="status-pill" class="dash-badge" style="background: rgba(16, 185, 129, 0.15); color: var(--success);">Foco Preservado</span>
           <p id="status-desc" class="dash-text">Seus hábitos atuais protegem sua atenção contra a procrastinação involuntária.</p>
-          <button class="btn-preset" onclick="simularVitoria()" style="border-color: var(--accent); color: var(--accent);">⚡ Simular Redução de Telas (-1.5h)</button>
+          <div id="diag-plan-alert" class="intervention-card">
+            <div>
+              <span id="diag-alert-title" style="font-size:0.75rem;font-weight:700;color:#fff;">Nível 1 • 4 Ações Recomendadas</span>
+              <div id="diag-alert-sub" style="font-size:0.68rem;color:var(--text-tertiary);">Acesse o Plano Dinâmico para blindar seu foco</div>
+            </div>
+            <button class="btn-preset" onclick="showTab('plan')" style="border-color: var(--accent); color: var(--accent); font-weight: 700; white-space: nowrap;">Ver Plano →</button>
+          </div>
+          <div style="margin-top: 10px;">
+            <button class="btn-preset" onclick="simularVitoria()" style="border-color: var(--card-border); color: var(--text-secondary);">⚡ Simular Redução de Telas (-1.5h)</button>
+          </div>
         </div>
       </div>
 
@@ -1303,8 +1451,41 @@ HTML_PAGE = """<!DOCTYPE html>
          TAB 6: PLANO DE AÇÃO
          ========================================== -->
     <div id="tab-plan" class="hidden">
+      <!-- Header Dinâmico de Severidade -->
+      <div class="plan-header-card">
+        <div id="plan-severity-badge" class="plan-severity-badge" style="background:rgba(16,185,129,0.15);color:var(--success);border:1px solid rgba(16,185,129,0.3);">
+          🟢 NÍVEL 1: FOCO PRESERVADO (25% DE RISCO)
+        </div>
+        <p id="plan-desc-text" class="plan-desc">
+          Seus hábitos comportamentais mantêm o córtex pré-frontal protegido. Recomendamos estratégias de manutenção do estado de flow e preservação da energia atencional.
+        </p>
+
+        <!-- Ação Rápida de Sincronização com o Pomodoro -->
+        <div class="plan-action-bar">
+          <div>
+            <div id="pomo-rec-title" style="font-size:0.78rem;font-weight:700;color:#fff;">Recomendação de Foco: Bloco Profundo de 50 min</div>
+            <div id="pomo-rec-sub" style="font-size:0.68rem;color:var(--text-tertiary);">Aproveite o baixo atrito para avançar tarefas densas</div>
+          </div>
+          <button id="btn-sync-pomo" class="btn-apply-pomo" onclick="aplicarPomoSugerido(50, 'Foco Profundo')">
+            ⚡ Configurar Pomodoro (50 min)
+          </button>
+        </div>
+
+        <!-- Barra de Progresso de Execução do Checklist -->
+        <div class="checklist-progress-box">
+          <div class="checklist-progress-header">
+            <span>Progresso das Medidas de Proteção</span>
+            <span id="plan-progress-label">0 de 4 aplicadas (0%)</span>
+          </div>
+          <div class="checklist-progress-track">
+            <div id="plan-progress-fill" class="checklist-progress-fill"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Checklist de Ações Escalonadas -->
       <div class="card">
-        <div class="card-title">Checklist Prático Anti-Dispersão</div>
+        <div class="card-title" id="checklist-title">Contramedidas Prioritárias da IA (4 Sugestões)</div>
         <div id="plan-items" class="checklist-container"></div>
       </div>
     </div>
@@ -1425,22 +1606,308 @@ HTML_PAGE = """<!DOCTYPE html>
       recalcular();
     }
 
-    function updatePlan(h, d, a, s) {
-      const plan = document.getElementById('plan-items');
-      const items = [
-        "Guardar o celular fora do campo de visão durante o bloco de foco",
-        "Dividir a matéria em blocos Pomodoro configurados de foco"
-      ];
-      if (d >= 3) items.push("Ativar modo 'Escala de Cinza' nas opções de acessibilidade do celular");
-      if (a >= 3) items.push("Esperar 90 segundos respirando fundo ao sentir vontade impulsiva de checar notificações");
-      if (s >= 3) items.push("Cessar exposição a telas 40 minutos antes do horário de dormir");
+    
+    // Matriz Científica de Contramedidas Escalonadas por Faixa de Risco
+    const PLAN_DATABASE = {
+      level1: {
+        name: "NÍVEL 1: FOCO PRESERVADO",
+        color: "var(--success)",
+        bg: "rgba(16,185,129,0.15)",
+        border: "rgba(16,185,129,0.3)",
+        desc: "Seus hábitos comportamentais mantêm o córtex pré-frontal em estado de autocontrole ativo. O foco está preservado; sua prioridade é otimizar o estado de flow e evitar micro-contaminações atencionais.",
+        pomoMin: 50,
+        pomoLabel: "Foco Profundo de 50 min",
+        pomoSub: "Aproveite a baixa vulnerabilidade para realizar tarefas intelectuais densas",
+        items: [
+          {
+            tag: "⏱️ Pomodoro", tagClass: "tag-pomo",
+            title: "Blocos Profundos de 50 Minutos (Deep Work)",
+            desc: "Como seu atrito dopaminérgico é baixo, use ciclos de 50 min de foco contínuo seguidos de 10 min de pausa para atingir o estado de fluxo máximo (Cal Newport)."
+          },
+          {
+            tag: "📱 Ambiente", tagClass: "tag-phone",
+            title: "Pausas 100% Analógicas sem Telas",
+            desc: "Nas pausas, evite redes ou notícias. Levante, beba água e olhe para o horizonte. Checar telas na pausa satura a memória de trabalho e reinicia a fadiga mental."
+          },
+          {
+            tag: "🧠 Neurociência", tagClass: "tag-neuro",
+            title: "Proteção Absoluta Contra 'Micro-Checagens'",
+            desc: "Pesquisas de Stanford mostram que uma olhada rápida de 10s no celular deixa um 'resíduo de atenção' que compromete o foco por até 15 minutos adicionais."
+          },
+          {
+            tag: "⚡ Imediato", tagClass: "tag-immediate",
+            title: "Definição de 1 Único Grande Marco para Hoje",
+            desc: "Com o foco protegido, escolha a entrega mais difícil do dia e execute-a agora, eliminando qualquer pendência cognitiva."
+          }
+        ]
+      },
+      level2: {
+        name: "NÍVEL 2: ATENÇÃO VULNERÁVEL",
+        color: "var(--warning)",
+        bg: "rgba(245,158,11,0.15)",
+        border: "rgba(245,158,11,0.3)",
+        desc: "Sinais de vulnerabilidade atencional detectados pelo modelo. Ao menor sinal de tédio ou cansaço na matéria, há forte propensão a fugir para o celular. Recomenda-se fricção preventiva.",
+        pomoMin: 25,
+        pomoLabel: "Pomodoro Clássico de 25 min",
+        pomoSub: "Prazos curtos criam leve urgência que afasta o tédio",
+        items: [
+          {
+            tag: "⏱️ Pomodoro", tagClass: "tag-pomo",
+            title: "Pomodoro Clássico de 25 min (Foco Estrito)",
+            desc: "Blocos de 25 minutos criam uma janela temporal curta que seu cérebro aceita com baixo atrito, evitando o desânimo de sessões longas."
+          },
+          {
+            tag: "📱 Celular", tagClass: "tag-phone",
+            title: "Celular Fora do Campo de Visão (Efeito Brain Drain)",
+            desc: "Estudos comprovam que mesmo virado para baixo na mesa, o smartphone drena capacidade de raciocínio porque o cérebro gasta energia para ignorá-lo. Guarde-o numa gaveta."
+          },
+          {
+            tag: "🧠 Neurociência", tagClass: "tag-neuro",
+            title: "Regra dos 5 Minutos para Quebra de Inércia",
+            desc: "Ao sentir o impulso de procrastinar, comprometa-se a fazer apenas 5 minutos. A dopamina real é liberada pela sensação de progresso após iniciar, e não antes."
+          },
+          {
+            tag: "⚡ Imediato", tagClass: "tag-immediate",
+            title: "Isolamento de 1 Única Prioridade",
+            desc: "Não estude com 3 materiais abertos. Escolha um único PDF ou lista de exercícios e feche o resto. Multitarefa fragmenta a atenção inibitória."
+          },
+          {
+            tag: "🧠 Neurociência", tagClass: "tag-neuro",
+            title: "Técnica do Bloco de Descarga (Brain Dump)",
+            desc: "Mantenha um papel ao lado. Toda vez que surgir uma dúvida ou vontade súbita de pesquisar algo aleatório, anote no papel e retorne à matéria imediatamente."
+          },
+          {
+            tag: "📱 Celular", tagClass: "tag-phone",
+            title: "Corte Imediato de Abas Parasitas",
+            desc: "Feche todas as abas que não sejam essenciais para a tarefa (especialmente WhatsApp Web, YouTube e e-mails)."
+          }
+        ]
+      },
+      level3: {
+        name: "NÍVEL 3: ALTO RISCO DE PROCRASTINAÇÃO",
+        color: "#f43f5e",
+        bg: "rgba(244,63,94,0.15)",
+        border: "rgba(244,63,94,0.3)",
+        desc: "Alerta de fuga dopaminérgica ativa: a inquietação sem telas e o hábito de scroll estão competindo diretamente com sua tarefa. É necessária intervenção de choque de fricção imediato.",
+        pomoMin: 15,
+        pomoLabel: "Micro-Pomodoro de Resgate (15 min)",
+        pomoSub: "Reduz o atrito psicológico inicial a praticamente zero",
+        items: [
+          {
+            tag: "⏱️ Pomodoro", tagClass: "tag-pomo",
+            title: "Modo Resgate: Micro-Pomodoro de 15 Minutos",
+            desc: "Seu cérebro rejeita blocos longos no momento. Reduza a meta para apenas 15 minutos: é um intervalo pequeno demais para o cérebro inventar desculpas."
+          },
+          {
+            tag: "📱 Celular", tagClass: "tag-phone",
+            title: "Ativar Modo 'Escala de Cinza' no Celular",
+            desc: "As cores vibrantes das interfaces ativam os centros de recompensa visual do cérebro. Em preto e branco, o aparelho perde imediatamente seu apelo aditivo."
+          },
+          {
+            tag: "📱 Ambiente", tagClass: "tag-phone",
+            title: "Fricção Física Radical (Celular em Outro Cômodo)",
+            desc: "A dependência do smartphone é quebrada pelo atrito físico: ter que levantar da cadeira e caminhar até outro cômodo interrompe o impulso involuntário de checagem."
+          },
+          {
+            tag: "🧠 Neurociência", tagClass: "tag-neuro",
+            title: "Protocolo Fisiológico dos 90 Segundos",
+            desc: "A onda neuroquímica de urgência por dopamina dura cerca de 90 segundos. Ao sentir a fissura de abrir o feed, feche os olhos, respire pelo nariz e espere a onda passar."
+          },
+          {
+            tag: "⚡ Imediato", tagClass: "tag-immediate",
+            title: "Fatiamento Físico Mínimo da Tarefa",
+            desc: "Não pense em 'fazer o trabalho'. Reduza para a menor ação física possível: 'Vou apenas abrir o arquivo e ler a primeira questão'."
+          },
+          {
+            tag: "⏱️ Pomodoro", tagClass: "tag-pomo",
+            title: "Isolamento Acústico com Chuva Zen Ativada",
+            desc: "Ligue o som de chuva zen no Pomodoro. O ruído contínuo bloqueia estímulos auditivos periféricos que alimentam a mente dispersa."
+          },
+          {
+            tag: "😴 Sono", tagClass: "tag-sleep",
+            title: "Higiene do Sono Preventiva (Se Cansaço Presente)",
+            desc: "Sono irregular esgota o glicogênio do córtex pré-frontal. Se estiver cansado, encerre o uso de telas 45 min antes de dormir para restaurar o foco de amanhã."
+          },
+          {
+            tag: "⚡ Imediato", tagClass: "tag-immediate",
+            title: "Modo Foco em Tela Cheia (Tecla F11)",
+            desc: "Maximize a janela de estudo em tela cheia para eliminar a visão da barra de tarefas, abas do navegador e relógio do sistema."
+          }
+        ]
+      },
+      level4: {
+        name: "NÍVEL 4: SATURAÇÃO DOPAMINÉRGICA CRÍTICA",
+        color: "#f43f5e",
+        bg: "rgba(244,63,94,0.25)",
+        border: "rgba(244,63,94,0.5)",
+        desc: "Estado de paralisia comportamental crítica: sobrecarga de estímulos rápidos associada a forte abstinência digital. Requer protocolo de emergência imediata para destravar.",
+        pomoMin: 10,
+        pomoLabel: "Micro-Bloco de Emergência (10 min)",
+        pomoSub: "Objetivo único: romper o estado de paralisia imediatamente",
+        items: [
+          {
+            tag: "⚡ Imediato", tagClass: "tag-immediate",
+            title: "Reinício Fisiológico com Duplo Suspiro (Huberman)",
+            desc: "Faça 2 inspirações curtas e profundas pelo nariz, seguidas de 1 expiração longa pela boca. Repita 3 vezes para recalibrar o sistema nervoso e zerar a ansiedade de paralisia."
+          },
+          {
+            tag: "📱 Celular", tagClass: "tag-phone",
+            title: "Desligamento Físico Total do Smartphone",
+            desc: "Silenciar não basta. Desligue o aparelho por completo nos próximos 30 minutos para eliminar qualquer possibilidade técnica de fuga imediata."
+          },
+          {
+            tag: "⏱️ Pomodoro", tagClass: "tag-pomo",
+            title: "Micro-Bloco de Sobrevivência (10 a 15 min)",
+            desc: "Seu foco não é render muito agora, é apenas quebrar a inércia. Ajuste o Pomodoro para 10 ou 15 min e dê play sem pensar no resultado."
+          },
+          {
+            tag: "🧠 Neurociência", tagClass: "tag-neuro",
+            title: "Apenas Posicionar o Corpo (Regra dos 2 Minutos)",
+            desc: "Seu único compromisso é sentar na cadeira e colocar as mãos no teclado ou caderno. Apenas adotar a postura física correta já reduz a resistência mental em 70%."
+          },
+          {
+            tag: "⚡ Imediato", tagClass: "tag-immediate",
+            title: "Copo de Água Gelada + Movimento de 1 Minuto",
+            desc: "Beba um copo de água gelada e dê uma caminhada rápida pela casa para interromper a névoa mental e o transe do scroll involuntário."
+          },
+          {
+            tag: "📱 Ambiente", tagClass: "tag-phone",
+            title: "Mesa 100% Vazia (Zero Distrações Visuais)",
+            desc: "Limpe tudo da sua mesa. Deixe apenas o computador/caderno e uma garrafa de água. Reduzir estímulos visuais periféricos acalma o córtex pré-frontal."
+          },
+          {
+            tag: "🧠 Neurociência", tagClass: "tag-neuro",
+            title: "Compromisso Externo (Body Doubling)",
+            desc: "Avise alguém: 'Vou focar 15 minutos agora e já te falo'. A sensação de prestação de contas externa ativa centros inibitórios da mente."
+          },
+          {
+            tag: "📱 Celular", tagClass: "tag-phone",
+            title: "Desinstalação Temporária de Apps de Vídeo Curto",
+            desc: "Se TikTok, Instagram ou Shorts forem o ralo de atenção, desinstale os aplicativos até o final do dia. Eles foram desenhados para quebrar qualquer autocontrole."
+          },
+          {
+            tag: "🧠 Neurociência", tagClass: "tag-neuro",
+            title: "Reenquadre a Origem da Dopamina",
+            desc: "Lembre-se: o prazer das redes é falso e gera queda imediata do humor. A satisfação profunda virá do alívio ao concluir este primeiro micro-bloco."
+          },
+          {
+            tag: "⏱️ Pomodoro", tagClass: "tag-pomo",
+            title: "Celebrar a Primeira Vitória Mínima",
+            desc: "Ao soar o sino do primeiro bloco de 10 min, comemore. Você rompeu a inércia; o segundo bloco será muito mais natural."
+          }
+        ]
+      }
+    };
 
-      plan.innerHTML = items.map(text => `
-        <label class="check-item">
-          <input type="checkbox">
-          <span>${text}</span>
-        </label>
-      `).join('');
+    let checkedPlanItems = new Set();
+
+    function updatePlan(prob, h, d, a, s, c) {
+      let levelKey = 'level1';
+      let levelNum = 1;
+      if (prob < 35) { levelKey = 'level1'; levelNum = 1; }
+      else if (prob < 60) { levelKey = 'level2'; levelNum = 2; }
+      else if (prob < 80) { levelKey = 'level3'; levelNum = 3; }
+      else { levelKey = 'level4'; levelNum = 4; }
+
+      const cfg = PLAN_DATABASE[levelKey];
+      
+      // Atualiza Badge do Diagnóstico
+      const diagTitle = document.getElementById('diag-alert-title');
+      const diagSub = document.getElementById('diag-alert-sub');
+      if (diagTitle) {
+        diagTitle.textContent = `Nível ${levelNum} • ${cfg.items.length} Ações Recomendadas`;
+        diagTitle.style.color = cfg.color;
+      }
+      if (diagSub) {
+        diagSub.textContent = `Plano escalonado gerado para o risco de ${prob}%`;
+      }
+
+      // Atualiza Header do Plano
+      const badge = document.getElementById('plan-severity-badge');
+      if (badge) {
+        badge.textContent = `${cfg.name} (${prob}% DE RISCO)`;
+        badge.style.background = cfg.bg;
+        badge.style.color = cfg.color;
+        badge.style.border = `1px solid ${cfg.border}`;
+      }
+
+      const descEl = document.getElementById('plan-desc-text');
+      if (descEl) descEl.textContent = cfg.desc;
+
+      const pTitle = document.getElementById('pomo-rec-title');
+      const pSub = document.getElementById('pomo-rec-sub');
+      const pBtn = document.getElementById('btn-sync-pomo');
+      if (pTitle) pTitle.textContent = `Recomendação de Foco: ${cfg.pomoLabel}`;
+      if (pSub) pSub.textContent = cfg.pomoSub;
+      if (pBtn) {
+        pBtn.textContent = `⚡ Configurar Pomodoro (${cfg.pomoMin} min)`;
+        pBtn.onclick = () => aplicarPomoSugerido(cfg.pomoMin, cfg.pomoLabel);
+      }
+
+      const checkTitle = document.getElementById('checklist-title');
+      if (checkTitle) checkTitle.textContent = `Contramedidas Prioritárias da IA (${cfg.items.length} Ações Escalonadas)`;
+
+      // Renderiza os itens do checklist
+      const container = document.getElementById('plan-items');
+      if (!container) return;
+
+      container.innerHTML = cfg.items.map((it, idx) => {
+        const itemId = `${levelKey}_item_${idx}`;
+        const isChecked = checkedPlanItems.has(itemId);
+        return `
+          <label class="check-item ${isChecked ? 'checked' : ''}" id="lbl_${itemId}">
+            <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="togglePlanCheck('${itemId}')">
+            <div class="check-content">
+              <div class="check-title-row">
+                <span class="check-title">${it.title}</span>
+                <span class="check-tag ${it.tagClass}">${it.tag}</span>
+              </div>
+              <div class="check-desc">${it.desc}</div>
+            </div>
+          </label>
+        `;
+      }).join('');
+
+      updatePlanProgress(cfg.items.length);
+    }
+
+    function togglePlanCheck(itemId) {
+      const lbl = document.getElementById('lbl_' + itemId);
+      if (checkedPlanItems.has(itemId)) {
+        checkedPlanItems.delete(itemId);
+        if (lbl) lbl.classList.remove('checked');
+      } else {
+        checkedPlanItems.add(itemId);
+        if (lbl) lbl.classList.add('checked');
+        showToast('✅ Medida anti-procrastinação aplicada!');
+      }
+
+      // Descobre total de itens do nível atual
+      let levelKey = currentProb < 35 ? 'level1' : (currentProb < 60 ? 'level2' : (currentProb < 80 ? 'level3' : 'level4'));
+      const total = PLAN_DATABASE[levelKey].items.length;
+      updatePlanProgress(total);
+    }
+
+    function updatePlanProgress(total) {
+      let levelKey = currentProb < 35 ? 'level1' : (currentProb < 60 ? 'level2' : (currentProb < 80 ? 'level3' : 'level4'));
+      let checkedCount = 0;
+      for (let i = 0; i < total; i++) {
+        if (checkedPlanItems.has(`${levelKey}_item_${i}`)) checkedCount++;
+      }
+      const pct = Math.round((checkedCount / total) * 100);
+      const lbl = document.getElementById('plan-progress-label');
+      const fill = document.getElementById('plan-progress-fill');
+      if (lbl) lbl.textContent = `${checkedCount} de ${total} aplicadas (${pct}%)`;
+      if (fill) fill.style.width = pct + '%';
+    }
+
+    function aplicarPomoSugerido(minutos, nomeModo) {
+      pomoSettings.focusMin = minutos;
+      localStorage.setItem('pomodoroConfig', JSON.stringify(pomoSettings));
+      setPomoMode('focus');
+      initPomoDisplay();
+      showTab('pomo');
+      showToast(`⏱️ Pomodoro configurado para ${nomeModo}! Pronto para iniciar.`);
     }
 
     /* ========================================================
