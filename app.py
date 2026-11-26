@@ -1937,6 +1937,7 @@ HTML_PAGE = """<!DOCTYPE html>
        2. NAVEGAÇÃO DE ABAS
        ======================================================== */
     function showTab(tab) {
+      // ── Troca de aba: SEMPRE executa, nunca pode falhar ──────────────
       const tabs = ['diag', 'pomo', 'chat', 'ativ', 'report', 'plan'];
       tabs.forEach(t => {
         const el = document.getElementById('tab-' + t);
@@ -1945,17 +1946,24 @@ HTML_PAGE = """<!DOCTYPE html>
         if (nav) nav.classList.toggle('active', t === tab);
       });
 
-      // Atualiza o contexto em tempo real na aba que acabou de abrir
-      const h = parseFloat(document.getElementById('input-horas').value);
-      const d = parseInt(document.getElementById('input-dopamina').value);
-      const a = parseInt(document.getElementById('input-ansiedade').value);
-      const s = parseInt(document.getElementById('input-sono').value);
-      const c = parseInt(document.getElementById('input-concentracao').value);
-      updatePlan(currentProb, h, d, a, s, c);
-      updateAllScreensDiagnosis(currentProb, h, d, a, s, c);
+      // ── Atualiza contexto: erros aqui NÃO travam a UI ───────────────
+      try {
+        const hEl = document.getElementById('input-horas');
+        const dEl = document.getElementById('input-dopamina');
+        const aEl = document.getElementById('input-ansiedade');
+        const sEl = document.getElementById('input-sono');
+        const cEl = document.getElementById('input-concentracao');
+        const h = hEl ? parseFloat(hEl.value) || 0 : 0;
+        const d = dEl ? parseInt(dEl.value) || 0 : 0;
+        const a = aEl ? parseInt(aEl.value) || 0 : 0;
+        const s = sEl ? parseInt(sEl.value) || 0 : 0;
+        const c = cEl ? parseInt(cEl.value) || 0 : 0;
+        updatePlan(currentProb, h, d, a, s, c);
+        updateAllScreensDiagnosis(currentProb, h, d, a, s, c);
+      } catch(e) { console.warn('[showTab] context update error:', e); }
 
-      if (tab === 'ativ') renderActivityHistories();
-      if (tab === 'report') renderReportAnalytics();
+      try { if (tab === 'ativ') renderActivityHistories(); } catch(e) { console.warn('[showTab] renderActivityHistories error:', e); }
+      try { if (tab === 'report') renderReportAnalytics(); } catch(e) { console.warn('[showTab] renderReportAnalytics error:', e); }
     }
 
     /* ========================================================
@@ -2612,9 +2620,32 @@ HTML_PAGE = """<!DOCTYPE html>
       }
     }
 
-    // Inicialização geral
-    recalcular();
-    initPomoDisplay();
+    // ── Expor funções globais para onclick= inline ──────────────────
+    window.showTab = showTab;
+    window.recalcular = recalcular;
+    window.sendQuickPrompt = sendQuickPrompt;
+    window.executeChat = executeChat;
+    window.aplicarPomoSugerido = aplicarPomoSugerido;
+    window.togglePomo = togglePomo;
+    window.resetPomo = resetPomo;
+    window.setPomoMode = setPomoMode;
+    window.savePomoSettings = savePomoSettings;
+    window.addActivity = addActivity;
+    window.deleteActivity = deleteActivity;
+    window.renderActivityHistories = renderActivityHistories;
+    window.renderReportAnalytics = renderReportAnalytics;
+
+    // ── Inicialização segura após DOM pronto ─────────────────────────
+    function _init() {
+      try { recalcular(); } catch(e) { console.warn('[init] recalcular error:', e); }
+      try { initPomoDisplay(); } catch(e) { console.warn('[init] initPomoDisplay error:', e); }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', _init);
+    } else {
+      _init();
+    }
   </script>
 </body>
 </html>
