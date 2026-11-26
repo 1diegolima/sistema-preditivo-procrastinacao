@@ -1217,6 +1217,17 @@ HTML_PAGE = """<!DOCTYPE html>
          ========================================== -->
     <div id="tab-pomo" class="hidden">
       <div class="pomodoro-card">
+                <!-- Banner Contextual do Diagnóstico no Pomodoro -->
+        <div id="pomo-diag-alert" style="display:flex;align-items:center;justify-content:space-between;gap:8px;background:rgba(255,255,255,0.03);border:1px solid var(--card-border);border-radius:var(--radius-sm);padding:8px 14px;margin-bottom:18px;font-size:0.75rem;">
+          <div style="display:flex;align-items:center;gap:8px;text-align:left;">
+            <span id="pomo-diag-dot" style="width:8px;height:8px;border-radius:50%;background:var(--success);flex-shrink:0;"></span>
+            <span id="pomo-diag-msg" style="color:var(--text-secondary);">Diagnóstico ML: Risco 25% • Foco Preservado</span>
+          </div>
+          <button id="pomo-diag-action-btn" onclick="aplicarPomoSugerido(50, 'Foco Profundo')" class="btn-preset" style="padding:4px 10px;font-size:0.7rem;font-weight:700;border-color:var(--accent);color:var(--accent);white-space:nowrap;">
+            Aplicar 50 min
+          </button>
+        </div>
+
         <!-- Mode Pills -->
         <div class="pomo-modes">
           <button id="pomo-mode-focus" class="pomo-mode-btn active" onclick="setPomoMode('focus')">Foco</button>
@@ -1312,12 +1323,15 @@ HTML_PAGE = """<!DOCTYPE html>
          ========================================== -->
     <div id="tab-ativ" class="hidden">
       <div class="activity-grid">
-        <!-- Banner Pomodoro Sync -->
-        <div class="pomo-sync-banner">
-          <div>
-            <strong>⏱️ Contabilização Automática:</strong> Suas sessões de estudo são somadas automaticamente ao usar a aba <strong>Pomodoro</strong>.
+        <!-- Banner Contextual do Diagnóstico em Atividades -->
+        <div class="pomo-sync-banner" style="background:rgba(255,255,255,0.02);border:1px solid var(--card-border);display:flex;flex-direction:column;gap:6px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;width:100%;">
+            <span style="font-size:0.75rem;font-weight:700;color:#fff;">💡 Impacto dos Hábitos no seu Foco</span>
+            <span id="ativ-risk-badge" class="brand-tag">Risco 25%</span>
           </div>
-          <button class="btn-preset" onclick="showTab('pomo')" style="background:var(--accent);color:#000;font-weight:700;">Ir para o Pomodoro →</button>
+          <p id="ativ-diag-tip" style="font-size:0.74rem;color:var(--text-secondary);line-height:1.4;margin:0;">
+            O modelo indica que exercícios físicos regulares reduzem a inquietação sem celular (+0.51 no modelo), fortalecendo sua disciplina de estudo.
+          </p>
         </div>
 
         <!-- Registro de Atividade Física (Treinos) -->
@@ -1379,6 +1393,15 @@ HTML_PAGE = """<!DOCTYPE html>
          TAB 5: RELATÓRIO ANALYTICS & STREAKS
          ========================================== -->
     <div id="tab-report" class="hidden">
+      <!-- Diagnóstico Correlacional -->
+      <div id="report-diag-card" style="background:rgba(255,255,255,0.02);border:1px solid var(--card-border);border-radius:var(--radius-md);padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+        <div>
+          <span style="font-size:0.72rem;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.06em;">Evolução do Risco</span>
+          <div id="report-diag-text" style="font-size:0.78rem;color:#fff;margin-top:2px;">Seu risco calculado atual é de 25%. Aumentar seus blocos Pomodoro diários reduz o risco basal da procrastinação.</div>
+        </div>
+        <button class="btn-preset" onclick="showTab('pomo')" style="border-color:var(--accent);color:var(--accent);font-weight:700;white-space:nowrap;">Novo Bloco →</button>
+      </div>
+
       <!-- 4 Cards de Métricas -->
       <div class="metrics-grid">
         <div class="metric-card">
@@ -1585,7 +1608,7 @@ HTML_PAGE = """<!DOCTYPE html>
         desc.textContent = 'Alerta de saturação dopaminérgica: alto índice de scroll e abstinência sem smartphone sequestram o foco.';
       }
 
-      updatePlan(h, d, a, s);
+      updatePlan(currentProb, h, d, a, s, c); updateAllScreensDiagnosis(currentProb, h, d, a, s, c);
     }
 
     function simularVitoria() {
@@ -1921,6 +1944,16 @@ HTML_PAGE = """<!DOCTYPE html>
         if (el) el.classList.toggle('hidden', t !== tab);
         if (nav) nav.classList.toggle('active', t === tab);
       });
+
+      // Atualiza o contexto em tempo real na aba que acabou de abrir
+      const h = parseFloat(document.getElementById('input-horas').value);
+      const d = parseInt(document.getElementById('input-dopamina').value);
+      const a = parseInt(document.getElementById('input-ansiedade').value);
+      const s = parseInt(document.getElementById('input-sono').value);
+      const c = parseInt(document.getElementById('input-concentracao').value);
+      updatePlan(currentProb, h, d, a, s, c);
+      updateAllScreensDiagnosis(currentProb, h, d, a, s, c);
+
       if (tab === 'ativ') renderActivityHistories();
       if (tab === 'report') renderReportAnalytics();
     }
@@ -2479,6 +2512,91 @@ HTML_PAGE = """<!DOCTYPE html>
       } catch(err) {
         loading.remove();
         appendChatMessage('bot', '<strong>Dica Rápida:</strong> Para romper o atrito, vá à aba <strong>Pomodoro</strong> e faça apenas 5 minutos de foco ininterrupto.');
+      }
+    }
+
+    
+    /* ========================================================
+       SUGESTÕES CONTEXTUAIS EM TODAS AS TELAS BASEADAS NO RISCO
+       ======================================================== */
+    function updateAllScreensDiagnosis(prob, h, d, a, s, c) {
+      // 1. Tela Pomodoro: Banner e Ação Rápida
+      const pDot = document.getElementById('pomo-diag-dot');
+      const pMsg = document.getElementById('pomo-diag-msg');
+      const pBtn = document.getElementById('pomo-diag-action-btn');
+
+      if (pMsg && pBtn && pDot) {
+        if (prob < 35) {
+          pDot.style.background = 'var(--success)';
+          pMsg.innerHTML = `<strong>🟢 Foco Preservado (${prob}%):</strong> Córtex protegido. Modo Deep Work (50 min) recomendado.`;
+          pBtn.textContent = 'Aplicar 50 min';
+          pBtn.onclick = () => aplicarPomoSugerido(50, 'Foco Profundo');
+        } else if (prob < 60) {
+          pDot.style.background = 'var(--warning)';
+          pMsg.innerHTML = `<strong>🟡 Atenção Vulnerável (${prob}%):</strong> Foco instável. Pomodoro clássico de 25 min com celular fora de vista.`;
+          pBtn.textContent = 'Aplicar 25 min';
+          pBtn.onclick = () => aplicarPomoSugerido(25, 'Pomodoro Clássico');
+        } else if (prob < 80) {
+          pDot.style.background = '#f43f5e';
+          pMsg.innerHTML = `<strong>🟠 Alto Risco (${prob}%):</strong> Cérebro hiper-reativo. Use o Modo Resgate de 15 min com Chuva Zen.`;
+          pBtn.textContent = 'Aplicar 15 min';
+          pBtn.onclick = () => aplicarPomoSugerido(15, 'Modo Resgate');
+        } else {
+          pDot.style.background = '#f43f5e';
+          pMsg.innerHTML = `<strong>🔴 Risco Crítico (${prob}%):</strong> Paralisia iminente. Faça um micro-bloco de apenas 10-15 min para quebrar o atrito!`;
+          pBtn.textContent = 'Aplicar 10 min';
+          pBtn.onclick = () => aplicarPomoSugerido(10, 'Modo Emergência');
+        }
+      }
+
+      // 2. Tela Coach Zen: Chips Rápidos Adaptativos
+      const chipsArea = document.querySelector('.chat-quick-chips');
+      if (chipsArea) {
+        if (prob >= 60) {
+          chipsArea.innerHTML = `
+            <button class="quick-chip" onclick="sendQuickPrompt('sos')">🚨 SOS: Paralisia e vontade incontrolável de rolar feed</button>
+            <button class="quick-chip" onclick="sendQuickPrompt('ansiedade')">⚡ Inquietação extrema sem o smartphone</button>
+            <button class="quick-chip" onclick="executeChat('Me dê o protocolo de 90 segundos para baixar minha fissura por dopamina.')">🛑 Protocolo 90s</button>
+          `;
+        } else if (prob >= 35) {
+          chipsArea.innerHTML = `
+            <button class="quick-chip" onclick="sendQuickPrompt('ansiedade')">⚡ Como conter impulsos antes de começar</button>
+            <button class="quick-chip" onclick="sendQuickPrompt('sono')">😴 Dormi mal, como focar?</button>
+            <button class="quick-chip" onclick="executeChat('Como aplicar a regra dos 5 minutos no meu estudo de agora?')">⏱️ Regra dos 5 Minutos</button>
+          `;
+        } else {
+          chipsArea.innerHTML = `
+            <button class="quick-chip" onclick="executeChat('Meu foco está alto. Como manter o estado de flow por mais tempo?')">🚀 Manter Estado de Flow</button>
+            <button class="quick-chip" onclick="executeChat('Como blindar meu ambiente de estudo contra micro-distrações?')">🛡️ Blindar Ambiente</button>
+            <button class="quick-chip" onclick="sendQuickPrompt('sono')">😴 Otimizar Sono e Foco</button>
+          `;
+        }
+      }
+
+      // 3. Tela Atividades: Dica de Neurociência
+      const ativBadge = document.getElementById('ativ-risk-badge');
+      const ativTip = document.getElementById('ativ-diag-tip');
+      if (ativBadge) ativBadge.textContent = `Risco Atual: ${prob}%`;
+      if (ativTip) {
+        if (a >= 4 || d >= 4) {
+          ativTip.textContent = "O modelo detectou que a inquietação sem celular (+0.51) e o scroll involuntário (+0.35) estão elevados. Exercícios aeróbicos ou musculação reduzem os níveis de cortisol e restauram receptores de dopamina, derrubando a vontade de procrastinar.";
+        } else if (s >= 4) {
+          ativTip.textContent = "Problemas de sono (+0.16) reduzem a energia do córtex pré-frontal. Uma caminhada ao ar livre pela manhã com exposição à luz natural regula seu ritmo circadiano e melhora seu foco nas próximas 12 horas.";
+        } else if (h >= 4.0) {
+          ativTip.textContent = "Alto tempo de tela diário (+0.14) gera sobrecarga visual e cognitiva. Substituir 30 minutos de tela por atividade física reduz comprovadamente a probabilidade de procrastinação em tarefas acadêmicas.";
+        } else {
+          ativTip.textContent = "Seus hábitos estão equilibrados! Praticar atividade física de 3 a 5 vezes na semana sustenta os níveis basais de dopamina saudável, blindando sua capacidade de foco profundo.";
+        }
+      }
+
+      // 4. Tela Relatório: Análise Correlacional
+      const rptText = document.getElementById('report-diag-text');
+      if (rptText) {
+        if (prob >= 60) {
+          rptText.innerHTML = `Seu risco preditivo está em <strong>${prob}% (Elevado)</strong>. Estudos demonstram que completar ao menos <strong>2 blocos Pomodoro diários</strong> com celular guardado reduz o risco basal em até 25% na primeira semana.`;
+        } else {
+          rptText.innerHTML = `Seu risco preditivo está em <strong>${prob}% (Controlado)</strong>. Manter streaks consistentes de estudo e treino consolida hábitos de disciplina inabaláveis.`;
+        }
       }
     }
 
