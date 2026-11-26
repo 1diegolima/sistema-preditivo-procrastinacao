@@ -2457,11 +2457,23 @@ HTML_PAGE = """<!DOCTYPE html>
       showToast(val ? '🟢 Chave Gemini salva!' : 'Modo padrão restaurado.');
     }
 
+    function parseMarkdownToHtml(txt) {
+      if (!txt) return '';
+      // Converte **negrito** para <strong>negrito</strong>
+      let html = txt.replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>');
+      // Converte *italico* para <em>italico</em>
+      html = html.replace(/\\*(.*?)\\*/g, '<em>$1</em>');
+      // Converte quebras de linha em <br> se ja nao tiverem
+      html = html.replace(/\n/g, '<br>');
+      return html;
+    }
+
     function appendChatMessage(role, text) {
       const box = document.getElementById('chat-messages');
       const row = document.createElement('div');
       row.className = `chat-bubble-row ${role}`;
-      row.innerHTML = `<div class="chat-bubble ${role}">${text}</div>`;
+      const formatted = role === 'bot' ? parseMarkdownToHtml(text) : text;
+      row.innerHTML = `<div class="chat-bubble ${role}">${formatted}</div>`;
       box.appendChild(row);
       box.scrollTop = box.scrollHeight;
     }
@@ -2670,19 +2682,23 @@ class FocusHandler(http.server.SimpleHTTPRequestHandler):
 O usuário passou pelo modelo preditivo de Machine Learning com as seguintes métricas atuais:
 - Risco de Procrastinação: {ctx.get('probabilidade', 50)}% ({ctx.get('status', 'MODERADO')})
 - Tempo em Telas: {ctx.get('horas_redes_sociais', 2.0)} horas/dia
-- Frequência de Scroll sem Propósito (Dopamina): {ctx.get('busca_dopamina_scroll', 2)}/5
 - Inquietação sem Celular (Abstinência): {ctx.get('ansiedade_sem_celular', 2)}/5 (Fator de maior peso no modelo: +0.51)
+- Scroll sem Propósito (Dopamina): {ctx.get('busca_dopamina_scroll', 2)}/5
 - Problemas de Sono: {ctx.get('problemas_sono', 2)}/5
 - Dificuldade prévia de foco: {ctx.get('dificuldade_concentracao', 2)}/5
 
-Instruções para o Coach:
-- Responda em português brasileiro de forma acolhedora, empática e direta (máximo 2 a 3 parágrafos curtos).
-- Forneça técnicas práticas e imediatas de neurociência e psicologia comportamental (Andrew Huberman, James Clear, Cal Newport).
-- Ajude o usuário a vencer a inércia e quebrar o atrito imediato para a tarefa que ele precisa realizar agora.
-- Seja extremamente direto, conciso e ágil nas respostas, visando máxima economia de tokens e zero enrolação/introduções vazias.
-- Limite sua resposta a no máximo 2 ou 3 frases curtas (ou 3 tópicos enxutos), focando 100% na ação física imediata que o usuário deve tomar agora.
-- O objetivo é fazer o usuário fechar o chat e voltar a produzir o mais rápido possível.
-- Use técnicas de neurociência prática (regra dos 5 min, protocolo de 90s, fricção visual, respiração)."""
+🚨 DIRETRIZ SUPREMA E CHOQUE DE REALIDADE (INVIOLÁVEL):
+Sua ÚNICA E EXCLUSIVA função neste sistema é manter o usuário FOCADO em suas tarefas e combater a procrastinação.
+1. SE O USUÁRIO PERGUNTAR QUALQUER COISA FORA DO ESCOPO DE FOCO/ESTUDO/PRODUTIVIDADE:
+   (Exemplos: receitas de bolo/culinária, piadas, amenidades, fofocas, entretenimento, curiosidades aleatórias ou papo furado que claramente é uma fuga de atenção):
+   ⛔ NÃO RESPONDA À PERGUNTA! NÃO DÊ DICAS DO ASSUNTO ALHEIO!
+   Corte imediatamente e aplique um CHOQUE DE REALIDADE firme, direto e cirúrgico no usuário, apontando que ele está usando o chat como uma forma disfarçada de procrastinar e fugir da tarefa real.
+   Exemplo de resposta obrigatória:
+   "🛑 **Pare agora.** Você abriu este app para combater a procrastinação, mas está me perguntando sobre coisas aleatórias. Isso é o seu cérebro criando uma distração elaborada para fugir do trabalho real que você precisa fazer. Feche este chat agora mesmo, vá para a aba **Pomodoro** e inicie seu bloco de estudo imediatamente."
+2. SE A PERGUNTA FOR LEGÍTIMA SOBRE FOCO, MATÉRIA DE ESTUDO, HÁBITOS OU COMO VENCER A INÉRCIA:
+   - Responda em português brasileiro de forma acolhedora, porém extremamente direta e concisa (máximo 2 a 3 frases curtas).
+   - Foque 100% na ação física imediata (regra dos 5 min, protocolo dos 90s, fricção visual, celular em outro cômodo).
+   - O objetivo é fazer o usuário fechar o chat e ir agir imediatamente."""
                         gemini_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent?key={api_key}"
                         gemini_payload = {
                             "system_instruction": {"parts": [{"text": system_prompt}]},
@@ -2699,7 +2715,12 @@ Instruções para o Coach:
                             res_json = json.loads(res.read().decode('utf-8'))
                             raw_text = res_json['candidates'][0]['content']['parts'][0]['text']
                             # Converte quebras de linha em tags HTML simples
-                            reply = raw_text.replace('\n', '<br>')
+                            # Converte markdown padrão para tags HTML limpas
+                            import re
+                            formatted = raw_text
+                            formatted = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', formatted)
+                            formatted = re.sub(r'\*(.*?)\*', r'<em>\1</em>', formatted)
+                            reply = formatted.replace('\n', '<br>')
                             source = "gemini-flash-lite-latest"
                     except Exception as gemini_err:
                         print(f"[!] Erro ao chamar Gemini API: {gemini_err}. Usando fallback offline.")
@@ -2709,15 +2730,20 @@ Instruções para o Coach:
                 if not reply:
                     lower = user_msg.lower()
                     prob = ctx.get('probabilidade', 50)
-                    if 'feed' in lower or 'sos' in lower or 'celular' in lower or 'tiktok' in lower or 'instagram' in lower:
-                        reply = "<strong>PARE por 90 segundos!</strong> 🛑<br><br>A neurociência comprova que a onda de urgência de dopamina decai se você não alimentar o estímulo nos primeiros 90 segundos.<br>1. Não encoste no aparelho.<br>2. Faça 2 respirações lentas pelo nariz.<br>3. Combine consigo mesmo: <em>'Vou fazer só 5 minutos da tarefa'</em>. Romper a inércia faz a dopamina vir do progresso real!"
+                    
+                    # Verificação de fuga/distração alheia
+                    distracoes = ['bolo', 'receita', 'futebol', 'jogo', 'piada', 'fofoca', 'filme', 'série', 'musica', 'música', 'clima', 'tempo']
+                    if any(w in lower for w in distracoes):
+                        reply = "🛑 <strong>Pare agora.</strong> Você abriu este app para combater a procrastinação, mas está usando o chat para se distrair. Isso é o seu cérebro sabotando o seu foco.<br><br>👉 Feche esta janela agora, abra a aba <strong>Pomodoro</strong> e inicie seu bloco de foco imediatamente."
+                    elif 'feed' in lower or 'sos' in lower or 'celular' in lower or 'tiktok' in lower or 'instagram' in lower:
+                        reply = "🛑 <strong>PARE por 90 segundos!</strong><br><br>A neurociência comprova que a onda de urgência de dopamina decai se você não alimentar o estímulo nos primeiros 90 segundos.<br>1. Não encoste no aparelho.<br>2. Faça 2 respirações lentas pelo nariz.<br>3. Combine consigo mesmo: <em>'Vou fazer só 5 minutos da tarefa'</em>. O atrito está apenas no início!"
                     elif 'sono' in lower or 'dormir' in lower or 'cansaço' in lower:
-                        reply = f"Com sono ruim, seu córtex pré-frontal tem menos energia para inibir impulsos (seu risco calculado é de {prob}%).<br><br>👉 <strong>Estratégia de Sobrevivência:</strong> Não tente blocos de 2 horas. Use <strong>Micro-Pomodoros de 15 minutos</strong> com pausas para caminhar e beber água. Termine apenas 1 prioridade essencial hoje."
+                        reply = f"Com sono ruim, seu córtex pré-frontal tem menos energia inibitória (seu risco calculado é de {prob}%).<br><br>👉 <strong>Estratégia Imediata:</strong> Não tente blocos de 2 horas. Use <strong>Micro-Pomodoros de 15 minutos</strong> na aba Pomodoro. Conclua apenas 1 prioridade essencial hoje."
                     elif 'ansiedade' in lower or 'abstinência' in lower:
-                        reply = "O modelo de IA apontou que <strong>a inquietação sem celular tem o maior peso (+0.51)</strong> na sua propensão a dispersar.<br><br>👉 <strong>Tática Imediata:</strong> Coloque a tela do celular em <em>Escala de Cinza</em> nas configurações. Sem cores vibrantes, seu cérebro desliga o modo de caça à dopamina."
+                        reply = "O modelo de IA apontou que <strong>a inquietação sem celular tem o maior peso (+0.51)</strong> na sua propensão a dispersar.<br><br>👉 <strong>Tática Imediata:</strong> Coloque a tela do celular em <em>Escala de Cinza</em> nas configurações e guarde-o fora da mesa. Sem cores vibrantes, o cérebro encerra a busca compulsiva por estímulos."
                     else:
-                        reply = f"Entendido! O seu risco preditivo atual calculado pela IA é de <strong>{prob}%</strong>.<br><br>Minha recomendação direta: vá para a aba <strong>Timer Zen</strong>, selecione 1 única micro-meta para agora e execute 1 bloco de 25 minutos com o ruído de chuva ativado. Pequenas vitórias consistentes constroem disciplina."
-                    source = "offline-zen"
+                        reply = f"Seu risco preditivo atual é de <strong>{prob}%</strong>.<br><br>Minha recomendação direta: vá para a aba <strong>Pomodoro</strong>, defina 1 única micro-meta e execute 1 bloco de foco com a Chuva Zen ligada. A dopamina virá da sensação de progresso real."
+                    source = "offline-zen" 
 
                 self.send_response(200)
                 self.send_header("Content-type", "application/json; charset=utf-8")
