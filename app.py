@@ -1550,27 +1550,18 @@ HTML_PAGE = """<!DOCTYPE html>
   </div>
 
   <script>
-    /* ── Captura erros de JS e exibe visualmente para debug ───── */
-    window.onerror = function(msg, src, line, col, err) {
-      var d = document.getElementById('js-error-banner');
-      if (!d) { d = document.createElement('div'); d.id = 'js-error-banner';
-        d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#f43f5e;color:#fff;padding:10px 16px;font-size:12px;z-index:99999;font-family:monospace;';
-        document.body.appendChild(d); }
-      d.textContent = 'JS ERROR [L' + line + ']: ' + msg;
-    };
-
     /* ========================================================
        1. CÁLCULO PREDITIVO (MODELO REGRESSÃO LOGÍSTICA REAL)
        ======================================================== */
-    var B0 = -4.889100598331315;
-    var B_HORAS = 0.14603957;
-    var B_DOPAMINA = 0.35412845;
-    var B_ANSIEDADE = 0.51240182;
-    var B_SONO = 0.16213791;
-    var B_CONCENTRACAO = 0.37560214;
+    const B0 = -4.889100598331315;
+    const B_HORAS = 0.14603957;
+    const B_DOPAMINA = 0.35412845;
+    const B_ANSIEDADE = 0.51240182;
+    const B_SONO = 0.16213791;
+    const B_CONCENTRACAO = 0.37560214;
 
-    var currentProb = 25;
-    var geminiApiKey = '';
+    let currentProb = 25;
+    let geminiApiKey = '';
     try { geminiApiKey = localStorage.getItem('GEMINI_API_KEY') || ''; } catch(e) {}
 
     function sigmoid(z) { return 1 / (1 + Math.exp(-z)); }
@@ -2630,18 +2621,24 @@ HTML_PAGE = """<!DOCTYPE html>
       }
     }
 
-    // ── Expor funções globais para onclick= inline ──────────────────
+    // ── Exporta funções necessárias para window (onclick handlers) ──
     window.showTab = showTab;
     window.recalcular = recalcular;
     window.sendQuickPrompt = sendQuickPrompt;
     window.executeChat = executeChat;
     window.aplicarPomoSugerido = aplicarPomoSugerido;
-    window.togglePomo = togglePomo;
-    window.resetPomo = resetPomo;
     window.setPomoMode = setPomoMode;
-    window.savePomoSettings = savePomoSettings;
-    window.addActivity = addActivity;
-    window.deleteActivity = deleteActivity;
+    window.togglePomoTimer = togglePomoTimer;
+    window.skipPomoCycle = skipPomoCycle;
+    window.finishCurrentBlockNow = finishCurrentBlockNow;
+    window.salvarConfigPomodoro = salvarConfigPomodoro;
+    window.openPomoSettingsModal = openPomoSettingsModal;
+    window.closePomoSettingsModal = closePomoSettingsModal;
+    window.toggleRainSound = toggleRainSound;
+    window.salvarEstudoManual = salvarEstudoManual;
+    window.salvarTreinoManual = salvarTreinoManual;
+    window.deletarAtividade = deletarAtividade;
+    window.limparTodoHistorico = limparTodoHistorico;
     window.renderActivityHistories = renderActivityHistories;
     window.renderReportAnalytics = renderReportAnalytics;
 
